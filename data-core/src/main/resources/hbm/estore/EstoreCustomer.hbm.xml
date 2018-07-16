@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.estore.EstoreCustomer" table="estore_customer">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="unionid" column="unionid" type="string" />
+		<property name="wxOpenId" column="wx_open_id" type="string" />
+		<property name="userId" column="user_id" type="long" />
+		<property name="nickname" column="nickname" type="string" />
+		<property name="storeId" column="store_id" type="long" />
+		<property name="balance" column="balance" type="big_decimal" />
+		<property name="score" column="score" type="big_decimal" />
+		<property name="createTime" column="create_time" type="timestamp" />
+	</class>
+</hibernate-mapping>

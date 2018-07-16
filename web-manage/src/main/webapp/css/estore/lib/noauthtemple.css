@@ -1,0 +1,159 @@
+@charset "utf-8";
+/* CSS Document */
+/*login*/
+.login_bg {
+	background: #0183e1;
+}
+.login_header {
+	background: #f8f8f8;
+	width: 100%;
+	height: 80px;
+}
+.login_main {
+	width: 1290px;
+	margin: 0 auto;
+	height: 80px;
+	background: url(../../img/logoblue.png) no-repeat 30px 28px;
+	line-height:110px;
+	overflow: hidden;
+	color:#0782c9;
+	font-size:20px;
+    font-weight: 500;
+    text-indent:4.2em;
+}
+
+.login_center {
+	width: 1190px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.login_footer {
+	background: #f8f8f8;
+	width: 100%;
+	height: 80px;
+	line-height: 80px;
+}
+.login_footer {
+	text-align: center;
+	font-size: 14px;
+	color: #94939d;
+}
+.login_left {
+	width: 580px;
+}
+.login_left img {
+	width: 500px;
+	margin-top: 30px;
+	margin-left: 80px;
+}
+.divleft label {
+	width: 50px;
+	text-align: right;
+	float: left;
+	height: 35px;
+	line-height: 35px;
+	padding-right: 10px;
+	font-size: 14px;
+}
+.divleft input {
+	width: 227px;
+	float: left;
+	font-size: 14px;
+}
+.captchadiv input {
+	width: 80px;
+}
+.login_right {
+	width: 380px;
+	background: #fff;
+	height: 400px;
+	margin-left: 80px;
+}
+.divleft {
+	margin-left: 30px;
+	margin-top: 15px;
+ *margin-left:15px;
+	display: block;
+	width: 350px;
+	height: 46px;
+}
+.divleft input {
+	background: url(../../img/login_icon.png) no-repeat;
+	width: 281px;
+	height: 44px;
+	line-height: 44px;
+	padding-left: 34px;
+	font-size: 14px;
+}
+.divleft #username {
+	background-position: 8px 14px;
+}
+.divleft #password {
+	background-position: 8px -56px;
+}
+.divleft #captcha {
+	background-position: 8px -122px;
+}
+.login-center h2 {
+	font-size: 18px;
+	color: #0183e1;
+	padding: 20px;
+	font-weight: normal;
+}
+.login_line {
+	width: 340px;
+	height: 1px;
+	border-bottom: 1px solid #c0c0c0;
+	margin: 0 auto;
+	margin-bottom: 30px;
+}
+.captchadiv input {
+	width: 160px;
+	height: 44px;
+	line-height: 44px;
+	padding-left: 34px;
+}
+.captchadiv .mycaptchaimg {
+	width: 110px;
+	height: 44px;
+	float: left;
+	margin-left: 10px;
+	display: inline;
+}
+.captchadiv .mycaptchaimg {
+}
+.mycaptchaimg:hover {
+	cursor: pointer;
+}
+.login-center .logbtn {
+	background-color: #0175e2;
+	border-color: #0175e2;
+	color: #ffffff;
+	border-radius: 8dpx;
+	font-size: 20px;
+	width: 340px;
+	height: 50px;
+}
+.login-center .logbtn:hover {
+	background-color: #4081f5;
+	border-color: #4081f5;
+}
+.div-pass {
+	padding: 0 3px;
+	margin-top: 15px;
+}
+.div-pass a {
+	float: right;
+}
+.errorsdiv {
+	height: 20px;
+	margin-top: 16px;
+	background: none;
+	margin-left: 30px;
+	color: red;
+}
+.btnDiv {
+	width: 340px;
+	margin: 0 auto;
+	margin-top: 20px;
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.estore.EstoreService" table="estore_service">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="storeId" column="store_id" type="long" />
+		<property name="goodsId" column="goods_id" type="long" />
+		<property name="wxOrderNo" column="wx_order_no" type="string" />
+		<property name="wxOrderState" column="wx_order_state" type="integer" />
+		<property name="outTradeNo" column="out_trade_no" type="string" />
+		<property name="serviceMode" column="service_mode" type="integer" />
+		<property name="serviceType" column="service_type" type="integer" />
+		<property name="serviceState" column="service_state" type="integer" />	
+		<property name="servicePrice" column="service_price" type="big_decimal" />
+		<property name="servicePeopleNum" column="service_people_num" type="integer" />	
+		<property name="operatrAdminId" column="operator_admin_id" type="long" />
+		<property name="serviceTime" column="service_time" type="timestamp" />	
+		<property name="createTime" column="create_time" type="timestamp" />
+		
+		
+			
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,179 @@
+<style>
+page{
+  padding: 0;
+}
+.user {
+  width: 30%;
+  padding: 40rpx;
+  display: inline-block;
+  box-sizing: border-box;
+}
+.user-img {
+  width: 150rpx;
+  height: 150rpx;
+  vertical-align: middle;
+  border-radius: 10rpx;
+}
+.changeuser {
+  width: 200rpx;
+  height: 50rpx;
+  font-size: 18rpx;
+}
+.userinfo {
+  font-size: 32rpx;
+  display: inline-block;
+  vertical-align: middle;
+}
+page,
+.page,
+.page__bd{
+    height: 100%;
+}
+.page__bd{
+    padding-bottom: 0;
+}
+.weui-tab__content{
+    padding-top: 60px;
+    text-align: center;
+}
+.weui-cell__bd {
+  margin-left: 30rpx;
+}
+.weui-cells {
+  font-size: 36rpx;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <view class="user">
+      <image wx:if="{{avatarUrl}}" class="user-img" bindlongpress="chooseimage" src="{{ IMGURL+avatarUrl }}" mode="aspecFill"></image>
+      <view wx:if="{{!avatarUrl}}" class="user-img"></view>
+    </view>
+    <view class="userinfo">
+      <view class="nickname">昵称：{{ nickname }}</view>
+      <view>公司名称：{{ storeName }}</view>
+    </view>
+    <view class="weui-cells weui-cells_after-title">
+      <navigator wx:for="{{ lists }}" wx:key="{{ item.text }}" url="/pages/{{ item.url }}" open-type="navigateTo" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell__hd">
+          <image src="/images/{{item.src}}" style="margin-right: 5px;vertical-align: middle;width:20px; height: 20px;"></image>
+        </view>
+        <view class="weui-cell__bd">{{ item.text }}</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </navigator>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base64 from '../images/base64'
+  import Tabbar from '../compontents/tabbar'
+  import common from '../utils/common'
+  export default class Me extends wepy.page {
+    data= {
+      selected: 3,
+      src: '',
+      lists: [
+        {
+          id: 1,
+          text: '用户管理',
+          src: 'usermg.png',
+          url: 'user-manage'
+        },
+        {
+          id: 2,
+          text: '卡片管理',
+          src: 'bankcard.png',
+          url: 'card-manage'
+        },
+        {
+          id: 3,
+          text: '智能营销',
+          src: 'znyx.png',
+          url: 'newrcmd?type=userManage'
+        },
+        {
+          id: 4,
+          text: '自主营销',
+          src: 'zzyx.png',
+          url: 'selfrcmd?type=userManage'
+        },
+        {
+          id: 5,
+          text: '精准营销',
+          src: 'jzyx.png',
+          url: 'oldrcmd?type=userManage'
+        }
+      ],
+      storeName: '',
+      nickname: '',
+      avatarUrl: '',
+      gender: 0,
+      icon: '',
+      IMGURL: '',
+      URL: ''
+    }
+    components= {
+      tabbar: Tabbar
+    }
+    config = {
+      navigationBarTitleText: '管理'
+    }
+    onLoad() {
+      this.icon = base64.icon20
+    }
+    onShow() {
+      this.URL = this.$parent.globalData.URL
+      this.IMGURL = this.$parent.globalData.IMGURL
+      wx.request({
+        url: this.URL + 'myPage/info',
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        success: (res) => {
+          let data = res.data
+          console.log(data)
+          if (common.Interceptor(data)) {
+            if (data.success === false) {
+              common.tipAlert(data.message)
+            } else {
+              this.storeName = data.result.storeName
+              this.nickname = data.result.nickname
+              this.avatarUrl = data.result.avatarUrl
+              this.$apply()
+            }
+          }
+        }
+      })
+    }
+    setting () {
+      // 显示小程序当前设置权限的界面
+      wx.openSetting({
+        success: (res) => {
+          res.authSetting = {
+            'scope.userInfo': true,
+            'scope.userLocation': true,
+            'scope.camera': false
+          }
+        }
+      })
+    }
+    chooseimage () {
+      var that = this
+      wx.chooseImage({
+        count: 1,
+        sizeType: ['original', 'compressed'],
+        sourceType: ['album', 'camera'],
+        success: function(res) {
+          that.src = res.tempFilePaths
+        }
+      })
+    }
+  }
+</script>

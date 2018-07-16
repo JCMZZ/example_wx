@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task-scheduling>
+	<task>
+		<name>短信发送任务 </name>
+		<class>cn.emay.estore.task.SmsSendTask</class>
+		<concurrent min="1" max="3" ds="10s" />
+	</task>
+	<task>
+		<name>数据入库任务 </name>
+		<class>cn.emay.estore.task.SaveToDbTask</class>
+		<concurrent min="1" max="3" ds="10s" />
+	</task>
+	<task>
+		<name>获取状态报告任务</name>
+		<class>cn.emay.estore.task.EstoreGetReportTask</class>
+	</task>
+	<task>
+		<name>状态报告对比任务 </name>
+		<class>cn.emay.estore.task.EstoreCompareReportTask</class>
+		<concurrent min="1" max="3" ds="10s" />
+	</task>
+	<task>
+		<name>短信数据更新任务 </name>
+		<class>cn.emay.estore.task.UpdateSMSInDbTask</class>
+	</task>
+	<task>
+		<name>状态报告超时处理任务</name>
+		<class>cn.emay.estore.task.ReportTimeOutHandleTask</class>
+	</task>
+
+</task-scheduling>

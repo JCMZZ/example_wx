@@ -1,0 +1,553 @@
+<style lang='less'>
+page{
+  font-size: 36rpx;
+}
+.bank-card {
+  width: 600rpx;
+  height: 352rpx;
+  display: block;
+  margin: 0 auto;
+}
+.img {
+  height: 436rpx;
+  padding: 42rpx 0;
+  box-sizing: border-box;
+}
+.page__bd {
+  margin-top: 40rpx;
+}
+input {
+  box-sizing:border-box;
+  border: 1rpx solid #999;
+  text-align: left;
+  color: black;
+  padding:10rpx;
+}
+.picker {
+  text{
+    padding-left:20rpx;
+  }
+}
+.active {
+  color: #007ACC;
+}
+/* 卡号 */
+.tel {
+  box-sizing: border-box;
+  height: 80rpx;
+  padding: 20rpx 30rpx;
+  display: flex;
+  font-size:33rpx;
+  align-items: center;
+  input{
+    border:none;
+    padding:0;
+  }
+  .tel-txt {
+    display: inline-block;
+    width:370rpx;
+    height:100%;
+    vertical-align: middle;
+  }
+}
+.tel-edit {
+  float: right;
+  margin:0 25rpx;
+  font-size: 32rpx;
+  color: #565656;
+}
+.common_btn{
+  width:122rpx;
+  margin: 0 15rpx;
+  font-size:32rpx;
+  color: #565656;
+  padding-left: 0;
+  padding-right: 0;
+}
+// dialog
+.show-btn {
+  margin-top: 100rpx;
+  color: #22cc22;
+}
+
+.modal-mask {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: 0.5;
+  overflow: hidden;
+  z-index: 22222;
+  color: #fff;
+}
+.modal-dialog {
+  width: 680rpx;
+  height:310rpx;
+  overflow: hidden;
+  position: fixed;
+  top:0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  z-index: 99999;
+  background: #f9f9f9;
+  border-radius: 10rpx;
+}
+
+.modal-content {
+  padding: 50rpx 30rpx 0;
+  text-align: center;
+}
+.content-txt {
+  display: block;
+  margin-top: 20rpx;
+}
+.modal-text {
+  display: flex;
+  background: #fff;
+  border-radius: 4rpx;
+  font-size: 32rpx;
+  color:#333;
+  background-color: #F9F9F9;
+  .weui-cell__bd, .weui-cell__hd {
+    display: inline-block;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+  height: 86rpx;
+  font-size: 34rpx;
+  button:first-child{
+    margin-top:15px; 
+  }
+}
+.common{
+  .weui-cell__ft{
+    width:38%;
+    text-align: left;
+    color: #323232;
+  }
+}
+button[type=primary] {
+  color:#FFFFFF;
+  width: 130rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  background-color: #fff;
+  background-size: 140rpx 70rpx;
+  background-repeat: no-repeat;
+  background-position:-5rpx -5rpx;
+}
+button[size=mini] {
+  padding: 0;
+}
+.weui-check__label {
+  display: inline-block;
+  padding: 0;
+  margin-right: 4rpx;
+}
+.weui-input {
+  width: 130rpx;
+  height: 55rpx;
+  min-height: 55rpx;
+  vertical-align: middle;
+  padding: 0;
+}
+.middle {
+  vertical-align: middle;
+}
+.weui-check__hd_in-checkbox {
+  padding-right: 0;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <view>
+      <view class="img">
+        <image wx:if="{{cardsrc[index]}}" class="bank-card" src="/images/{{cardsrc[index]}}"></image>
+      </view>
+      <view class="tel">
+        <text>卡号：</text>
+        <input 
+          wx:if="{{telshow}}" 
+          class="active tel-txt" 
+          value="{{ cardNumber }}" 
+          maxlength="{{19}}"
+          bindinput="getnum" ></input>
+        <input wx:if="{{!telshow}}" class="tel-txt" value="{{ cardNumber }}" disabled="{{true}}"></input> 
+        <text wx:if="{{!telshow}}" class="tel-edit" bindtap="editCardnum">编辑</text>
+        <text wx:if="{{telshow}}" class="tel-edit" bindtap="cancelEdit">取消</text>
+        <text wx:if="{{telshow}}" class="tel-edit" bindtap="saveCardnum">保存</text>
+      </view>
+    </view>
+    <view class="page__bd">
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell common">
+          <view class="weui-cell__bd">余额：</view>
+          <view class="weui-cell__ft">{{balance}}元</view>
+          <button class="common_btn" @tap="dialog(1)">充值</button>
+          <button class="common_btn" @tap="dialog(2)">扣费</button>
+        </view>
+        <view class="weui-cell common">
+          <view class="weui-cell__bd">积分：</view>
+          <view class="weui-cell__ft">{{score}}分</view>
+          <button class="common_btn" @tap="dialog(3)">充值</button>
+          <button class="common_btn" @tap="dialog(4)">扣除</button>
+        </view>
+        <view class="weui-cell">
+          <view class="weui-cell__bd">等级：</view>
+            <view class="section" bindtap="chooseLevel">
+              <picker bindchange="bindPickerChange" value="{{index}}" range="{{cardLevelname}}">
+                <view class="picker">
+                  {{cardLevelname[index]}}<text class="weui-cell__ft weui-cell__ft_in-access"></text>
+                </view>
+              </picker>
+            </view>
+        </view>
+        <navigator url="consume" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+          <view class="weui-cell__bd">消费记录</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+        </navigator>
+        <navigator url="integral-record" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+          <view class="weui-cell__bd">积分记录</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+        </navigator>
+      </view>
+    </view>
+    <!-- 操作弹框 -->
+    <view class="modal-mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+      <view class="modal-dialog" wx:if="{{showModal}}">
+      <view class="modal-content">
+        <view class="modal-text">
+          <radio-group bindchange="radioChange">
+            <label class="weui-check__label" wx:for="{{radioItems}}" wx:key="value">
+              <radio class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
+              <view class="weui-cell__hd weui-check__hd_in-checkbox">
+                <icon class="weui-icon-checkbox_circle" type="circle" size="20" wx:if="{{!item.checked}}"></icon>
+                <icon class="weui-icon-checkbox_success" type="success" size="20" wx:if="{{item.checked}}"></icon>
+              </view>
+              <view wx:if="{{item.value !== '3'}}" class="weui-cell__bd middle">{{item.name}}</view>
+              <view wx:if="{{item.value === '3'}}" class="weui-cell__bd middle">
+                <text>其他</text><input style="display:inline-block;" class="weui-input" value="10" bindinput="inputPrice" maxlength="10"/>
+              </view>
+            </label>
+          </radio-group>
+        </view>
+        <text class="content-txt">是否充值？</text>
+      </view> 
+      <view class="modal-footer">
+        <button @tap="dialogConfirm('')" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini">确定</button>
+        <button @tap="dialogConfirm(false)" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini">取消</button>
+      </view>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Tabbar from '../compontents/tabbar'
+  import common from '../utils/common'
+  export default class EditMoney extends wepy.page {
+    config = {
+      navigationBarTitleText: '余额修改'
+    }
+    data = {
+      selected: 3,
+      cardsrc: ['tongcard.png', 'yincard.png', 'goldcard.png'],
+      cardLevelname: [],
+      cardTypeIds: [],
+      cardTypeId: '',
+      cardNumber: '',
+      cardNumberTS: '',
+      telshow: false,
+      isInputing: false,
+      URL: '',
+      IMGURLEDIT: '',
+      score: 19,
+      index: 0,
+      balance: 0,
+      cardId: '',
+      showModal: false,
+      title: '余额充值',
+      radioItems: [
+          {name: '50', value: '0', checked: true},
+          {name: '100', value: '1', checked: false},
+          {name: '200', value: '2', checked: false},
+          {name: '10', value: '3', checked: false}
+      ],
+      dialogType: 0
+    }
+    components = {
+      tabbar: Tabbar
+    }
+    onShow () {
+      this.URL = this.$parent.globalData.URL
+      this.IMGURLEDIT = this.$parent.globalData.IMGURLEDIT
+      this.backData()
+      // 卡的等级
+      wx.request({
+        url: this.URL + 'userManage/cardList',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        method: 'POST',
+        success: (res) => {
+          this.cardLevelname = []
+          let data = res.data
+          if (common.Interceptor(data)) {
+            for (var i = 0; i < data.result.length; i++) {
+              this.cardLevelname.push(data.result[i].name)
+              this.cardTypeIds.push(data.result[i].id)
+            }
+            this.cardLevelname.reverse()
+            this.cardTypeIds.reverse()
+            this.$apply()
+          }
+        }
+      })
+    }
+    // 卡的等级
+    chooseLevel () {
+    }
+    // 等级修改
+    bindPickerChange (e) {
+      this.index = e.detail.value
+      this.cardTypeId = this.cardTypeIds[this.index]
+      wx.request({
+        url: this.URL + 'userManage/updateCard',
+        data: {
+          cardId: this.cardId,
+          cardTypeId: this.cardTypeId,
+          cardNumber: this.cardNumberTS,
+          customerId: wx.getStorageSync('customerId'),
+          type: 2
+        },
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        method: 'POST',
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            if (data.success === false) {
+              common.tipAlert(data.message)
+            } else {
+              console.log(data)
+            }
+          }
+        }
+      })
+    }
+    methods = {
+      // 卡号修改
+      editCardnum () {
+        this.isInputing = true
+        this.telshow = true
+      },
+      // 取消编辑
+      cancelEdit () {
+        this.cardNumberTS = this.cardNumber
+        this.isInputing = false
+        this.telshow = false
+      },
+      // 卡号保存
+      saveCardnum () {
+        if (!/^[a-zA-Z0-9]{6,19}$/.test(this.cardNumberTS)) {
+          common.tipAlert('请输入6到19位数字字母')
+          return
+        }
+        this.telshow = false
+        this.URL = this.$parent.globalData.URL
+        this.cardTypeId = this.cardTypeIds[this.index]
+        wx.request({
+          url: this.URL + 'userManage/updateCard',
+          data: {
+            cardId: this.cardId,
+            cardTypeId: this.cardTypeId,
+            cardNumber: this.cardNumberTS,
+            customerId: wx.getStorageSync('customerId'),
+            type: 1
+          },
+          header: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+            'sessionId': wx.getStorageSync('sessionId')
+          },
+          method: 'POST',
+          success: (res) => {
+            let data = res.data
+            if (common.Interceptor(data)) {
+              this.list = data.result.list
+              this.isInputing = false
+              this.$apply()
+              if (!data.result.success) {
+                common.tipAlert('卡号已存在请重新编辑')
+              }
+              this.backData()
+            }
+          }
+        })
+      },
+      // 获取卡号
+      getnum (e) {
+        this.cardNumberTS = e.detail.value
+      },
+      // 弹框单选框
+      radioChange: function (e) {
+        for (var i = 0, len = this.radioItems.length; i < len; ++i) {
+          this.radioItems[i].checked = this.radioItems[i].value === e.detail.value
+        }
+      },
+      // 输入框值校验
+      inputPrice (e) {
+        this.radioItems[3].name = e.detail.value
+      },
+      // 触发弹框
+      dialog (type) {
+        this.isInputing && (this.telshow = false)
+        this.radioItems = [
+          {name: '50', value: '0', checked: true},
+          {name: '100', value: '1', checked: false},
+          {name: '200', value: '2', checked: false},
+          {name: '10', value: '3', checked: false}
+        ]
+        switch (+type) {
+          case 1:
+            this.title = '余额充值'
+            break
+          case 2:
+            this.title = '余额扣费'
+            break
+          case 3:
+            this.title = '积分充值'
+            break
+          case 4:
+            this.title = '积分扣除'
+            break
+        }
+        this.dialogType = +type
+        this.showModal = true
+      },
+      // 弹框confirm
+      dialogConfirm (type) {
+        if (type) {
+          this.showModal = false
+          this.dialogType = 0
+          this.radioItems[3].name = 10
+          this.isInputing && (this.telshow = true)
+          return
+        }
+        let data = {} // 请求参数
+        let num = 0 // 积分/余额区分
+        let isN = 0 // 差值判断
+        wx.getStorageSync('customerId') && (data['customerId'] = wx.getStorageSync('customerId'))
+        this.radioItems.some(v => v.checked && (num = v.name))
+        if (this.dialogType === 1 || this.dialogType === 2) {
+          if (num > 0) {
+            if (num.indexOf('.') !== -1 && num.substring(num.indexOf('.') + 1).length > 2) {
+              common.tipAlert('小数点后最多两位！')
+              return
+            }
+          } else {
+            common.tipAlert('请输入大于0的合法数值！')
+            return
+          }
+        } else {
+          if (!/^[1-9]\d*$/.test(num)) {
+            common.tipAlert('请输入大于0的整数！')
+            return
+          }
+        }
+        num = +num
+        if (this.dialogType === 1 || this.dialogType === 2) {
+          data['type'] = 2// 余额
+          if (this.dialogType === 1) {
+            data['operType'] = 1
+          } else {
+            data['operType'] = 2
+            isN = +this.balance - num
+          }
+          if (isN < 0) {
+            common.tipAlert('用户余额不足')
+            return
+          }
+        } else {
+          data['type'] = 1// 积分
+          if (this.dialogType === 3) {
+            data['num'] = num
+            data['operType'] = 1
+          } else {
+            isN = +this.score - num
+            data['operType'] = 2
+          }
+          if (isN < 0) {
+            common.tipAlert('用户积分不足')
+            return
+          }
+        }
+        data['num'] = num
+        // 发送请求
+        wx.request({
+          url: this.URL + 'userManage/updateAccount',
+          data,
+          method: 'POST',
+          header: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8', // 默认值
+            'sessionId': wx.getStorageSync('sessionId')
+          },
+          success: (res) => {
+            let data = res.data
+            if (common.Interceptor(data)) {
+              if (res.data.success) {
+                this.backData()
+              } else {
+                common.tipAlert('操作失败！')
+              }
+            }
+          },
+          fail: () => {
+            common.tipAlert('网络错误！')
+          }
+        })
+        this.dialogType = 0
+        this.showModal = false
+        this.isInputing && (this.telshow = true)
+      }
+    }
+    // 回显/刷新方法
+    backData () {
+      wx.request({
+        url: this.URL + 'userManage/customerInfo',
+        data: {
+          customerId: wx.getStorageSync('customerId')
+        },
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        method: 'POST',
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            this.score = data.result.score
+            this.cardNumber = this.cardNumberTS = data.result.cardNumber
+            this.balance = data.result.balance
+            this.cardId = data.result.cardId
+            this.index = data.result.cardLevel - 1
+            this.$apply()
+          }
+        }
+      })
+    }
+  }
+</script>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+   <class name="com.emay.estore.pojo.estore.EstoreCard" table="estore_card">
+   		<id name="id" column="id">
+			<generator class="native" />
+		  </id>
+   		<property name="cardTypeId" column="card_type_id"  type="long"/>
+  		<property name="number" column="number" type="string" />
+   		<property name="userCustomerId" column="user_customer_id"  type="long"/>
+   		<property name="createTime" column="create_time" type="timestamp" />
+   		
+   
+   </class>
+
+</hibernate-mapping>

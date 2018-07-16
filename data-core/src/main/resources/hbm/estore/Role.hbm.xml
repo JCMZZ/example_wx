@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.system.Role" table="system_auth_role">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="name" column="name" type="string" />
+		<property name="isDelete" column="is_delete" type="boolean" />
+		<property name="createTime" column="create_time" type="timestamp" />
+	</class>
+</hibernate-mapping>

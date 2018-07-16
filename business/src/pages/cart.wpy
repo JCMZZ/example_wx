@@ -1,0 +1,308 @@
+<style lang="less">
+.weui-media-box__hd_in-appmsg {
+  margin-right:30rpx;
+  width:283rpx;
+  height:150rpx;
+  line-height:150rpx;
+  text-align:center;
+}
+.weui-media-box__thumb{
+  width: 283rpx;
+  height: 150rpx;
+}
+.price {
+  margin-top: 30rpx;
+}
+.newprice {
+  color: #EB4A50;
+  font-size: 40rpx;
+}
+.discount {
+  margin: 0 30rpx;
+  color: #9A9A9A;
+}
+.oldprice {
+  text-decoration: line-through;
+  color: #9A9A9A;
+}
+/*编辑按钮部分*/
+.cart-handle {
+  overflow: hidden;
+  padding: 0 20rpx 20rpx;
+  font-size: 30rpx;
+  color: #555;
+}
+.cart-btn {
+  display: inline-block;
+  height: 60rpx;
+  line-height: 60rpx;
+  color: #fff;
+  margin-left: 16rpx;
+}
+.edit-btn {
+  width: 140rpx;
+  display: inline-block;
+  background-size: 175rpx 70rpx;
+  background-repeat: no-repeat;
+  background-position: -10rpx;
+  border-radius: 15rpx;
+  padding: 0 10rpx;
+  line-height: 60rpx;
+  float: right;
+  margin-top: 40rpx;
+  image {
+    width: 40rpx;
+    height: 40rpx;
+    vertical-align: middle;
+    margin-left: 12rpx;
+    margin-bottom: 10rpx;
+  }
+}
+/*产品名称*/
+.goods-name {
+  font-size:32rpx;
+  color:#393939;
+}
+/*综合、价格排序*/
+.sortClass{
+  position: absolute;
+  border-width:15rpx;
+  border-style: solid;
+  right: -40rpx;
+}
+.sort_top{
+  top:38rpx;
+  border-radius: 5rpx;
+  border-color:transparent transparent #999;
+}
+.sort_bottom{
+  top:74rpx;
+  border-radius: 5rpx;
+  border-color:#999 transparent transparent;
+}
+.sortall {
+  display: inline-block;
+  margin-left: 10rpx;
+}
+.sortprice {
+  display: inline-block;
+  margin-left: 190rpx;
+  position: relative;
+}
+.all-active {
+  color: #67ABFE;
+}
+.bottom-active {
+  border-top-color: #67ABFE;
+}
+.top-active {
+  border-bottom-color: #67ABFE;
+}
+/*没有产品*/
+.norecord {
+  color: #666;
+  text-align:center;
+  font-size: 40rpx;
+  margin-top:50%;
+}
+.weui-media-box{
+  padding:30rpx;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <!--主题内容-->
+    <view class="page__bd">
+        <view class="weui-panel weui-panel_access">
+            <view class="cart-handle">
+              <text class="sortall" @tap="srotall">综合</text>
+              <text class="sortprice" @tap="srotprice">
+                价格
+                <text class="{{topclass}}"></text>
+                <text class="{{bottomclass}}"></text>
+              </text>
+              <navigator class="edit-btn" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" url='editgoods' open-type="redirect">
+                <image src="../images/edit1.png"></image>
+                <view class="cart-btn">编辑</view>
+              </navigator>
+            </view>
+            <view class="weui-panel__bd">
+                <navigator
+                  wx:for="{{ list }}"
+                  wx:key="{{ item.id }}"
+                  bindtap="getGoodsid"
+                  data-id="{{item.id}}"
+                  url="/pages/goods-details?type={{orderType}}&method={{orderMethod}}&start={{start}}"
+                  class="weui-media-box weui-media-box_appmsg"
+                  hover-class="weui-cell_active">
+                    <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                        <image wx:if="{{item.imgUrl}}" class="weui-media-box__thumb" src="{{IMGURL+item.imgUrl}}" />
+                    </view>
+                    <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                        <view class="weui-media-box__desc goods-name">{{item.name}}</view>
+                        <view class="price">
+                          <text class="weui-media-box__title newprice">￥{{ item.discountPrice }}</text>
+                          <text class="discount">{{ item.discount }}折</text>
+                          <text class="oldprice">￥{{ item.price }}</text>
+                        </view>
+                    </view>
+                    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                </navigator>
+                <!--<view style="height: 100rpx;"></view>-->
+            </view>
+            <view wx:if="{{list.length <= 0}}" class="norecord">----- 您暂时没有产品 -----</view>
+            <view wx:if="{{list.length > 9}}" class="weui-panel__ft" bindtap="getMore">
+                <view class="weui-cell weui-cell_access weui-cell_link">
+                    <view class="weui-cell__bd">查看更多</view>
+                    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Tabbar from '../compontents/tabbar'
+  import common from '../utils/common'
+  export default class Cart extends wepy.page {
+    config = {
+      navigationBarTitleText: '产品'
+    }
+    components= {
+      tabbar: Tabbar
+    }
+    data = {
+      selected: 2,
+      list: [],
+      more: false,
+      start: 1,
+      limit: 10,
+      IMGURL: '',
+      IMGURLEDIT: '',
+      priceSort: true,
+      orderMethod: 0,
+      orderType: 0,
+      sessionId: '',
+      topclass: 'sortClass sort_top',
+      bottomclass: 'sortClass sort_bottom'
+    }
+    onLoad () {
+      wx.showShareMenu({
+        withShareTicket: true
+      })
+      // 获取全局的url
+      this.URL = this.$parent.globalData.URL
+      this.IMGURL = this.$parent.globalData.IMGURL
+      this.IMGURLEDIT = this.$parent.globalData.IMGURLEDIT
+      // 回显数据
+      this.sessionId = wx.getStorageSync('sessionId')
+      // this.orderMethod = 0
+      // this.orderType = 0
+      this.backData({
+        orderType: this.orderType,
+        orderMethod: this.orderMethod,
+        start: 1,
+        limit: this.start * this.limit
+      })
+    }
+    // 存储商品id
+    getGoodsid (e) {
+      wx.setStorageSync('goodsId', e.currentTarget.dataset.id)
+    }
+    // 查看更多
+    getMore () {
+      this.start = this.start + 1
+      wx.setStorageSync('start', this.start)
+      wx.request({
+        url: this.URL + 'goods/findGoods',
+        method: 'POST',
+        data: {
+          orderType: this.orderType,
+          orderMethod: this.orderMethod,
+          start: this.start,
+          limit: this.limit
+        },
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            if (data.result.list.length <= 0) {
+              common.tipAlert('没有更多数据了')
+            } else {
+              for (var i = 0; i < data.result.list.length; i++) {
+                this.list.push(data.result.list[i])
+              }
+              this.$apply()
+            }
+          }
+        }
+      })
+    }
+    // 数据回显
+    backData(data = {}) {
+      wx.request({
+        url: this.URL + 'goods/findGoods',
+        method: 'POST',
+        data,
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            if (data.success === false) {
+              common.tipAlert(data.message)
+            } else {
+              this.list = data.result.list
+              if (this.list.length > 9) {
+                this.more = true
+              }
+              this.$apply()
+            }
+          }
+        }
+      })
+    }
+    // 价格排序
+    srotprice () {
+      this.priceSort = !this.priceSort
+      this.orderMethod = this.priceSort ? 1 : 0
+      this.orderType = 1
+      if (this.priceSort === true) {
+        this.topclass = 'sortClass sort_top top-active'
+        this.bottomclass = 'sortClass sort_bottom'
+      } else {
+        this.topclass = 'sortClass sort_top'
+        this.bottomclass = 'sortClass sort_bottom bottom-active'
+      }
+      this.backData({
+        orderType: this.orderType,
+        orderMethod: this.orderMethod,
+        start: 1,
+        limit: this.start * this.limit
+      })
+    }
+    // 综合排序
+    srotall () {
+      this.topclass = 'sortClass sort_top'
+      this.bottomclass = 'sortClass sort_bottom'
+      this.orderMethod = 0
+      this.orderType = 0
+      this.backData({
+        orderType: this.orderType,
+        orderMethod: this.orderMethod,
+        start: 1,
+        limit: this.start * this.limit
+      })
+    }
+  }
+</script>

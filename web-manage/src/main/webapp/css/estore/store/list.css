@@ -1,0 +1,23 @@
+/* from 样式*/
+.form_box form {
+	text-align:center;
+}
+.form_box .item {
+	box-sizing:border-box;
+	text-align:center;
+	margin:10px 0;
+}
+.item-label{
+	width:115px !important;
+	display: inline-block  !important;
+	text-align:left  !important;
+}
+#addForm{
+	margin-bottom:25px;
+}
+/*���鵯��*/
+#checkDetail tr>td:nth-child(1){
+	width:55px;
+	vertical-align:text-top;
+	font-weight:900;
+}

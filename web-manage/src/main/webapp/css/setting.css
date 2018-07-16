@@ -1,0 +1,77 @@
+.main_right {
+	min-height: 500px;
+}
+
+.sysbox {
+	width: 80%;
+	margin:20px auto;
+}
+
+.sysbox table, .sysbox h2 {
+	width: 100%;
+}
+
+.sysbox h2 {
+	height: 40px;
+	line-height: 40px;
+	color: #ff9966;
+	font-size: 18px;
+	font-weight: normal;
+}
+
+.sysbox table thead {
+	border: 1px solid #f1f1f1;
+}
+
+.sysbox table th {
+	text-align: left;
+	text-indent: 1.5em;
+	background: #f9f9f9;
+}
+
+.sysbox table tr .systd {
+	padding-left: 21px;
+}
+
+.sysbox table tr .remark {
+	padding-left: 21px;
+}
+
+.sysbox table tr input[type=button] {
+	background: none;
+	border: none;
+	border-radius: 5px;
+	color: #0a62c3;
+	cursor: pointer
+}
+
+.sysbox table tr input[type=button]:hover {
+	background: -moz-linear-gradient(center top, #055cae, #048cee);
+	background: -webkit-linear-gradient(top, #055cae, #048cee);
+	color: #fff;
+	cursor: pointer
+}
+
+.sysbox table thead {
+	background: -moz-linear-gradient(center top, #f9fcfe, #def0fb);
+	background: -webkit-linear-gradient(top, #f9fcfe, #def0fb);
+	heigth: 31px;
+	line-height: 31px;
+}
+
+.sysbox table tr {
+	border-bottom: 1px dashed #f1f1f1;
+}
+
+.sysbox table td.exbtn {
+	text-align: left;
+}
+
+.dashLine{
+	margin:10px auto 15px;
+	border-bottom:1px dashed #ccc;
+}
+.tips{
+	padding-left:20px;
+	line-height:24px;
+}

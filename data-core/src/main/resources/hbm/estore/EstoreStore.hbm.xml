@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.estore.EstoreStore" table="estore_store">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="appId" column="app_id" type="string" />
+		<property name="name" column="name" type="string" />  
+		<property name="appSecret" column="app_secret" type="string" />  
+		<property name="address" column="address" type="string" />                                                                           
+		<property name="mobile" column="mobile" type="string" />
+		<property name="storeLicence" column="store_licence" type="string" />	
+		<property name="storeDescribe" column="store_describe" type="string" />	
+		<property name="longitude" column="longitude" type="big_decimal" />		
+		<property name="dimension" column="dimension" type="big_decimal" />
+		<property name="createTime" column="create_time" type="timestamp" />
+	</class>
+</hibernate-mapping>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

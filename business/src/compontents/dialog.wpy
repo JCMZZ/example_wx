@@ -1,0 +1,149 @@
+<style lang="less">
+   .show-btn {
+      margin-top: 100rpx;
+      color: #22cc22;
+    }
+
+    .modal-mask {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: #000;
+      opacity: 0.5;
+      overflow: hidden;
+      z-index: 9000;
+      color: #fff;
+    }
+
+    .modal-dialog {
+      width: 540rpx;
+      overflow: hidden;
+      position: fixed;
+      top: 50%;
+      left: 0;
+      z-index: 9999;
+      background: #fff;
+      margin: -180rpx 105rpx;
+      border-radius: 36rpx;
+    }
+
+    .modal-title {
+      padding-top: 50rpx;
+      font-size: 36rpx;
+      color: #030303;
+      text-align: center;
+    }
+
+    .modal-content {
+      padding: 50rpx 32rpx;
+    }
+
+    .modal-text {
+      display: flex;
+      background: #fff;
+      border-radius: 4rpx;
+      font-size: 28rpx;
+      color:#999;
+    }
+    .input {
+      width: 100%;
+      height: 82rpx;
+      font-size: 28rpx;
+      line-height: 28rpx;
+      padding: 0 20rpx;
+      box-sizing: border-box;
+      color: #333;
+    }
+
+    input-holder {
+      color: #666;
+      font-size: 28rpx;
+    }
+
+    .modal-footer {
+      display: flex;
+      flex-direction: row;
+      height: 86rpx;
+      border-top: 1px solid #dedede;
+      font-size: 34rpx;
+      line-height: 86rpx;
+    }
+
+    .btn-cancel {
+      width: 50%;
+      color: #666;
+      text-align: center;
+      border-right: 1px solid #dedede;
+    }
+
+    .btn-confirm {
+      width: 100%;
+      color: #ec5300;
+      text-align: center;
+    }
+</style>
+<template>
+    <view>
+     <view class="modal-mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+      <view class="modal-dialog" wx:if="{{showModal}}">
+        <view class="modal-title">点击确定按钮进行授权操作</view>
+          <view class="modal-content">
+            <view class="modal-text">
+              提示：点击允许授权才能进行下一步操作
+            </view>
+          </view>
+        <view class="modal-footer">
+        <button class="btn-confirm" @tap="onConfirm" data-status="confirm" open-type="getUserInfo" bindgetuserinfo="getUserinfo">确定</button>
+      </view>
+      </view>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  export default class Dialog extends wepy.component {
+    data = {
+      showModal: true,
+      canIUse: wx.canIUse('button.open-type.getUserInfo')
+    }
+    events = {
+    }
+    methods = {
+      preventTouchMove() {
+      },
+      /**
+      * 对话框取消按钮点击事件
+      */
+      onCancel() {
+        this.hideModal()
+      },
+      /**
+      * 对话框确认按钮点击事件
+      */
+      onConfirm () {
+        this.hideModal()
+      }
+    }
+    hideModal () {
+      this.showModal = false
+    }
+    onLoad () {
+    }
+    onShow () {
+       // 查看是否授权
+      wx.getSetting({
+        success: function (res) {
+          if (res.authSetting['scope.userInfo']) {
+            // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+            wx.getUserInfo({
+              success: function(res) {
+                console(res.userInfo)
+              }
+            })
+          }
+        }
+      })
+    }
+  }
+</script>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.system.RoleAuth" table="system_auth_role_auth">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="roleId" column="role_id" type="long" />
+		<property name="authId" column="auth_id" type="long" />
+		<property name="type" column="type" type="string" />
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.system.User" table="system_emay_user">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="nickname" column="nickname" type="string" />
+		<property name="username" column="username" type="string" />
+		<property name="password" column="password" type="string" />
+		<property name="email" column="email" type="string" />
+		<property name="mobile" column="mobile" type="string" />
+		<property name="state" column="user_state" type="int" />
+		<property name="createTime" column="create_time" type="timestamp" />
+		<property name="creatorUserId" column="create_user_id" type="long" />
+	</class>
+</hibernate-mapping>

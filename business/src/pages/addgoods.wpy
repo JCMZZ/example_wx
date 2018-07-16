@@ -1,0 +1,322 @@
+<style lang="less">
+/*@import '/style/weui.wxss';*/
+.index-swiper {
+  box-sizing: border-box;
+  height: 400rpx;
+  border: 2rpx dashed #ccc;
+}
+.index-swiper-img {
+  width: 750rpx;
+  height: 400rpx;
+}
+.dif {
+  font-size: 30rpx;
+  border: 1rpx solid #ccc;
+}
+.old {
+  text-decoration: line-through;
+}
+.main {
+  padding: 30rpx 40rpx 40rpx 30rpx;
+}
+.desc {
+  margin-top: 50rpx;
+  height: 250rpx;
+  position: relative;
+  color: #A4A4A4;
+  textarea{
+    height:100%;
+  }
+}
+.params {
+  margin: 30rpx 0;
+}
+.discount {
+  margin: 0 40rpx;
+}
+/*保存按钮*/
+.weui-flex__item {
+  -webkit-box-flex:0.5;
+  -webkit-flex:0.5;
+  flex:0.5;
+}
+.save-edit{
+  display: inline-block;
+  width: 230rpx;
+  text-align: center;
+  height: 72rpx;
+  line-height: 72rpx;
+  background-size: 250rpx 90rpx;
+  background-repeat: no-repeat;
+  background-position: -10rpx;
+  border-radius: 10rpx;
+  color: #fff;
+  font-size: 30rpx;
+  border: none;
+}
+.back {
+  float: left;
+}
+.save {
+  float: right;
+}
+.goods-edit {
+  padding: 0 80rpx;
+}
+/*轮播图的添加删除*/
+.swiper-handle {
+  position: absolute;
+  right:20rpx;
+  top:20rpx;
+  z-index:1000;
+  text{
+    box-sizing: border-box;
+    padding: 5rpx 15rpx;
+    color:#fff;
+    vertical-align: middle;
+    background: #67ABFE;
+    border-radius: 10rpx;
+    font-size: 32rpx;
+  }
+}
+.swiper-del {
+  margin-left: 30rpx;
+}
+/*名字的编辑*/
+.name {
+  position: relative;
+}
+.name-edit {
+  position: absolute;
+  right: 30rpx;
+}
+.nametxt {
+  width:100%;
+  height:100rpx;
+  display:block;
+  position:relative;
+}
+/*价格的编辑*/
+.oprice-edit {
+  margin-left:20rpx;
+}
+.nprice-edit {
+  margin-left:20rpx;
+}
+.nptxt, .optxt {
+  width:330rpx;
+  height:70rpx;
+  display:inline-block;
+  position:relative;
+  margin-top: 20rpx;
+}
+.optxt {
+  margin-left: 10rpx;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <!--轮播图部分-->
+    <view class="swiper-handle">
+      <text class="swiper-add" bindtap="addpic">添加</text>
+      <text class="swiper-del" bindtap="delswiper">删除</text>
+    </view>
+    <swiper
+      class="index-swiper"
+      indicator-dots="{{true}}"
+      autoplay="{{true}}"
+      interval="2500"
+      circular="{{true}}"
+      duration="1000"
+      indicator-color="rgba(255, 255, 255, .5)"
+      indicator-active-color="#fff">
+      <swiper-item  class="index-swiper-item" wx:key="{{ src }}">
+        <image wx:if="{{src}}" class="index-swiper-img" src="{{ src }}" alt="图片"></image>
+      </swiper-item>
+    </swiper>
+    <!--主体部分-->
+    <view class="main">
+      <view class="name">
+        <textarea class="nametxt dif" value="{{name}}" maxlength="{{30}}" placeholder="产品名称" bindinput="getText" data-name="name"></textarea>
+      </view>
+      <view>
+        <!--折后价格-->
+        <input class="nptxt dif" value="{{discountPrice}}" placeholder="折后价" bindinput="getText" data-name="disPrice"></input>
+        <!--原价-->
+        <input class="optxt dif" value="{{price}}" placeholder="原价" bindinput="getText" data-name="price"></input>
+      </view>
+      <view class="desc">
+        <textarea class="nametxt dif" value="{{describe}}" maxlength="{{100}}" placeholder="产品描述" bindinput="getText" data-name="describe"></textarea>
+      </view>
+    </view>
+    <!--保存部分-->
+     <view class="page__bd page__bd_spacing goods-edit">
+        <view style="overflow: hidden;">
+          <view class="save-edit back" bindtap="backP" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">返回</view>
+          <view class="save-edit save" bindtap="saveall" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">保存</view>
+        </view>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import common from '../utils/common'
+import TabBar from '../compontents/tabbar'
+export default class Addgoods extends wepy.page {
+  config = {
+    navigationBarTitleText: '添加产品'
+  }
+  components= {
+    tabbar: TabBar
+  }
+  data = {
+    selected: 2,
+    src: '',
+    IMGURLEDIT: '',
+    name: '',
+    describe: '',
+    price: '',
+    discount: '',
+    discountPrice: '',
+    URL: ''
+  }
+  getText (e) {
+    let type = e.currentTarget.dataset.name
+    switch (type) {
+      case 'name':
+        this.name = e.detail.value
+        break
+      case 'describe':
+        this.describe = e.detail.value
+        break
+      case 'disPrice':
+        this.discountPrice = e.detail.value
+        break
+      case 'price':
+        this.price = e.detail.value
+    }
+    if (!this.src) {
+      wx.showModal({
+        content: '请先上传图片',
+        showCancel: false,
+        success: (res) => {
+          this.name = this.describe = this.discountPrice = this.price = ''
+          this.$apply()
+        }
+      })
+    }
+  }
+  // 添加选择图片
+  addpic () {
+    wx.redirectTo({
+      url: 'addgoodspic'
+    })
+  }
+  // 删除轮播图操作
+  delswiper () {
+    this.src = ''
+    // wx.showModal({
+    //   title: '提示',
+    //   content: '确定执行删除操作吗?',
+    //   success: (res) => {
+    //     this.src = ''
+    //   }
+    // })
+  }
+  // 保存所有操作
+  saveall () {
+    console.log('保存所有')
+    if (this.name === '') {
+      common.tipAlert('请输入产品名字')
+      return
+    }
+    if (this.name.length > 30) {
+      common.tipAlert('名称保持30字以内')
+      return
+    }
+    if (this.describe === '') {
+      common.tipAlert('请输入产品描述')
+      return
+    }
+    if (this.describe.length > 100) {
+      common.tipAlert('产品描述保持100字以内')
+      return
+    }
+    if (this.discountPrice > 0) {
+      if (this.discountPrice > 1000000) {
+        common.tipAlert('价格控制在百万以内！')
+        return
+      }
+      if (this.discountPrice.indexOf('.') !== -1 && this.discountPrice.substring(this.discountPrice.indexOf('.') + 1).length > 2) {
+        common.tipAlert('价格小数点后最多两位！')
+        return
+      }
+    } else {
+      common.tipAlert('折后价请输入大于0的合法数值！')
+      return
+    }
+    if (this.price > 0) {
+      if (this.price > 1000000) {
+        common.tipAlert('价格控制在百万以内！')
+        return
+      }
+      if (this.price.indexOf('.') !== -1 && this.price.substring(this.price.indexOf('.') + 1).length > 2) {
+        common.tipAlert('价格小数点后最多两位！')
+        return
+      }
+    } else {
+      common.tipAlert('原价请输入大于0的合法数值！')
+      return
+    }
+    if (!this.src) {
+      common.tipAlert('请上传图片')
+      return
+    }
+    if (this.src !== null && this.name !== '' && this.describe !== '' && this.price !== '' && this.discountPrice !== '') {
+      wx.uploadFile({
+        url: this.$parent.globalData.URL + 'goods/addGoods', // 仅为示例，非真实的接口地址
+        header: {
+          'content-type': 'multipart/form-data',
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        filePath: this.src,
+        name: 'file',
+        formData: {
+          'goodsName': this.name,
+          'goodsDescribe': this.describe,
+          'price': this.price,
+          'discountPrice': this.discountPrice
+        },
+        success: (res) => {
+          let data = JSON.parse(res.data)
+          if (common.Interceptor(data)) {
+            if (data.success === false) {
+              common.tipAlert(data.message)
+            } else {
+              wx.redirectTo({
+                url: 'editgoods'
+              })
+            }
+          }
+        }
+      })
+    } else {
+      common.tipAlert('请完整填写所有信息')
+    }
+  }
+  backP () {
+    wx.redirectTo({
+      url: 'editgoods'
+    })
+  }
+  onLoad(option) {
+    this.URL = this.$parent.globalData.URL
+    this.IMGURLEDIT = this.$parent.globalData.IMGURLEDIT
+    this.src = option.src
+  }
+}
+</script>

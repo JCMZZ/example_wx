@@ -1,0 +1,69 @@
+<style lang="less">
+.txt {
+  text-align: center;
+  margin-top: 150rpx;
+}
+.company {
+  height: 80rpx;
+  line-height: 80rpx;
+  padding-left: 30rpx;
+  border-top: 1rpx solid #ccc;
+  border-bottom: 1rpx solid #ccc;
+  font-size: 28rpx;
+  margin-bottom: 100rpx;
+}
+.weui-msg__title {
+  font-size: 26rpx;
+  font-weight: 700;
+  margin-top: 14rpx;
+}
+.money {
+  display: block;
+  text-align: center;
+  margin: 60rpx 0;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <view class="txt">
+      <icon type="success" size="93"></icon>
+      <view class="weui-msg__title">支付成功！</view>
+    </view>
+    <rich-text class="money" nodes="{{nodes}}"></rich-text>
+    <view class="weui-btn-area">
+      <navigator wx:if="{{type === '1'}}" url='newrcmd' open-type="redirectTo"><button class="weui-btn" type="primary">完成</button></navigator>
+      <navigator wx:if="{{type === '2'}}" url='oldrcmd' open-type="redirectTo"><button class="weui-btn" type="primary">完成</button></navigator>
+      <navigator wx:if="{{type === '3'}}" url='selfrcmd?type=userManage' open-type="redirectTo"><button class="weui-btn" type="primary">完成</button></navigator>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import Tabbar from '../compontents/tabbar'
+export default class Successpay extends wepy.page {
+  config = {
+    navigationBarTitleText: '支付完成'
+  }
+  components = {
+    tabbar: Tabbar
+  }
+  data = {
+    selected: 3,
+    nodes: [{
+      name: 'h1',
+      children: [{
+        type: 'text',
+        text: '￥ 5000'
+      }]
+    }],
+    type: ''
+  }
+  onLoad(option) {
+    this.type = option.type
+  }
+}
+</script>

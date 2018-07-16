@@ -1,0 +1,148 @@
+<style>
+page{
+  padding:0;
+}
+.map_section{
+  width:100%;
+}
+.page-body-button {
+  position: relative;
+  margin-bottom: 30rpx;
+}
+.btn-area{
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 0 30rpx;
+}
+</style>
+<template>
+    <view>
+        <view wx:if="{{isGet}}">
+            <map
+            class="map_section"
+            id="myMap"
+            longitude = "{{longitude}}"
+            latitude = "{{latitude}}"
+            show-location
+            scale="{{18}}"
+            controls="{{controls}}"
+            style="height:{{height}}px"
+            ></map>
+            <view class="btn-area">
+              <button bindtap="getCenterLocation" class="page-body-button" type="primary">选择地址上传</button>
+              <button bindtap="moveToLocation" class="page-body-button" type="primary">取消选择</button>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy'
+// import common from '../utils/common'
+export default class Map extends wepy.page {
+  config = {
+    navigationBarTitleText: '当前地理位置'
+  }
+  data = {
+    isGet: false,
+    height: '',
+    controls: null,
+    address: '',
+    latitude: '',
+    longitude: ''
+  }
+  methods = {
+    // 获取经纬度信息
+    getCenterLocation () {
+      wx.chooseLocation({
+        type: 'wgs84',
+        success: (res) => {
+          console.log(res)
+          res.address || (res.address = '中国地区')
+          wx.redirectTo({
+            url: 'index?address=' + res.address + '&latitude=' + res.latitude + '&longitude=' + res.longitude
+          })
+        },
+        fail: () => {
+          wx.redirectTo({
+            url: 'index?address=中国地区&latitude=' + this.latitude + '&longitude=' + this.longitude
+          })
+        }
+      })
+    },
+    // 取消选择
+    moveToLocation () {
+      wx.redirectTo({
+        url: 'index?address=中国地区&latitude=' + this.latitude + '&longitude=' + this.longitude
+      })
+    }
+  }
+  // 初始化地图
+  initialize (options) {
+    if (options.latitude === '' || options.longitude === '') {
+      wx.getLocation({
+        type: 'wgs84',
+        success: (res) => {
+          console.log(res.address)
+          this.latitude = res.latitude
+          this.longitude = res.longitude
+          this.$apply()
+        }
+      })
+    } else {
+      this.address = options.address
+      this.latitude = options.latitude
+      this.longitude = options.longitude
+      this.$apply()
+    }
+  }
+  onLoad (options) {
+    // 获取地理位置权限
+    wx.getSetting({
+      success: (res) => {
+        if (!res.authSetting['scope.userLocation']) {
+          wx.authorize({
+            scope: 'scope.userLocation',
+            success: (res) => {
+              this.initialize(options)
+            },
+            fail: () => {
+              wx.openSetting({
+                success: (res) => {
+                  if (!res.authSetting['scope.userLocation']) {
+                    wx.redirectTo({
+                      url: 'index?address=' + this.address + '&latitude=' + this.latitude + '&longitude=' + this.longitude
+                    })
+                  } else {
+                    this.initialize(options)
+                  }
+                }
+              })
+            }
+          })
+        } else {
+          this.initialize(options)
+        }
+      }
+    })
+    wx.getSystemInfo({
+      success: (res) => {
+        this.height = res.windowHeight - 150
+        this.controls = [{
+          id: 1,
+          iconPath: '/images/location.png',
+          position: {
+            left: (res.windowWidth - 50) / 2,
+            top: (res.windowHeight - 150 - 75) / 2,
+            width: 50,
+            height: 50
+          }
+        }]
+        this.isGet = true
+        this.$apply()
+      }
+    })
+  }
+}
+</script>

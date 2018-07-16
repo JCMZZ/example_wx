@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       classpath:/org/springframework/beans/factory/xml/spring-beans-4.0.xsd  
+       http://www.springframework.org/schema/aop 
+       classpath:/org/springframework/aop/config/spring-aop-4.0.xsd 
+       http://www.springframework.org/schema/tx 
+       classpath:/org/springframework/transaction/config/spring-tx-4.0.xsd 
+       http://www.springframework.org/schema/context 
+       classpath:/org/springframework/context/config/spring-context-4.0.xsd 
+       ">
+
+	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+		<property name="poolProperties">
+			<bean class="org.apache.tomcat.jdbc.pool.PoolProperties">
+				<property name="url" value="${datasource.url}" />
+				<property name="driverClassName" value="${datasource.driverClassName}" />
+				<property name="username" value="${datasource.username}" />
+				<property name="password" value="${datasource.password}" />
+				<property name="maxActive" value="${datasource.maxActive}" />
+				<property name="maxIdle" value="${datasource.maxIdle}" />
+				<property name="minIdle" value="${datasource.minIdle}" />
+				<property name="initialSize" value="${datasource.initialSize}" />
+				<property name="testWhileIdle" value="${datasource.testWhileIdle}" />
+				<property name="validationQuery" value="${datasource.validationQuery}" />
+				<property name="timeBetweenEvictionRunsMillis"
+					value="${datasource.timeBetweenEvictionRunsMillis}" />
+				<property name="numTestsPerEvictionRun" value="${datasource.numTestsPerEvictionRun}" />
+				<property name="logAbandoned" value="${datasource.logAbandoned}" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingLocations">
+			<list>
+				<value>classpath*:hbm/**/*.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+				<prop key="hibernate.enable_lazy_load_no_trans">${hibernate.enable_lazy_load_no_trans}</prop>
+				<prop key="hibernate.autoReconnect">${hibernate.autoReconnect}</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext
+				</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<tx:advice id="transactionManagertxAdvice"
+		transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="save*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="delete*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="remove*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="update*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="modify*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="change*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="on*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="off*" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="select*" propagation="SUPPORTS" read-only="true"/>
+			<tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+			<tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+			<tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
+			<tx:method name="*"  propagation="SUPPORTS" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config proxy-target-class="true">
+		<aop:advisor advice-ref="transactionManagertxAdvice"
+			pointcut="execution(* com.emay.estore.service..*.*(..))  " />
+	</aop:config>
+
+</beans>

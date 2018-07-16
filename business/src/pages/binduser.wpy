@@ -1,0 +1,53 @@
+<style lang="less">
+.txt {
+  font-size: 35rpx;
+  text-align: center;
+  margin-top: 40%;
+}
+.backbtn {
+  margin-top: 200rpx;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <view class="txt">请联系xxxx@emay.cn开启管理员权限</view>
+    <button class="backbtn" bindtap="backindex">返回首页</button>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import common from '../utils/common'
+export default class Binduser extends wepy.page {
+  config = {
+    navigationBarTitleText: '绑定管理员'
+  }
+  backindex () {
+    wx.request({
+      url: this.$parent.globalData.URL + 'store/selectStore',
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': wx.getStorageSync('sessionId')
+      },
+      success: (res) => {
+        if (res.data.result !== null) {
+          if (res.data.result.isAdmin === false) {
+            common.tipAlert('还未开通管理员权限，请耐心等候')
+          } else if (res.data.result.isLogin === false) {
+            wx.redirectTo({
+              url: 'register'
+            })
+          } else {
+            wx.redirectTo({
+              url: 'index'
+            })
+            wx.setStorageSync('showModal', 0)
+          }
+        }
+      }
+    })
+  }
+}
+</script>

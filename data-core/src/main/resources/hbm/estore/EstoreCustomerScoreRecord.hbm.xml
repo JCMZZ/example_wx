@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.estore.EstoreCustomerScoreRecord" table="estore_customer_score_record">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="type" column="type" type="int" />
+		<property name="beforeScore" column="before_score" type="big_decimal" />
+		<property name="afterScore" column="after_score" type="big_decimal" />
+		<property name="changeScore" column="change_score" type="big_decimal" />
+		<property name="operatorAdminId" column="operator_admin_id" type="long" />
+		<property name="userCustomerId" column="user_customer_id" type="long" />
+		<property name="storeId" column="store_id" type="long" />		
+		<property name="createTime" column="create_time" type="timestamp" />
+	</class>
+</hibernate-mapping>

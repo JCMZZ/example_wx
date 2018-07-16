@@ -1,0 +1,160 @@
+<style lang="less">
+page {
+  font-size: 32rpx;
+  color: #80849D
+}
+// 轮播图部分
+.index-swiper {
+  height: 400rpx;
+}
+.index-swiper-img {
+  width: 750rpx;
+  height: 400rpx;
+}
+// 公司简介
+.description {
+  padding: 30rpx;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #ccc;
+  position: relative;
+}
+.des-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #051956;
+}
+.des-content {
+  display: block;
+  font-size: 27rpx;
+  text-indent:35rpx;
+  width: 100%;
+  height: 360rpx;
+}
+// 电话
+.tel {
+  padding: 20rpx 30rpx;
+  display: flex;
+  align-items: center;
+  border-bottom: 1rpx solid #ccc;
+}
+.tel-edit {
+  float: right;
+}
+.tel-txt {
+  display: inline-block;
+  width:250rpx;
+  height:41rpx
+}
+
+// 地址
+.address {
+  padding: 20rpx 30rpx;
+}
+.ad-txt {
+  width:100%;;
+  height:92rpx;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <!--轮播图部分-->
+    <view>
+      <swiper
+        class="index-swiper"
+        indicator-dots="{{true}}"
+        autoplay="{{true}}"
+        interval="2500"
+        duration="1000"
+        circular="{{true}}"
+        indicator-color="rgba(255, 255, 255, .5)"
+        indicator-active-color="#fff">
+        <swiper-item class="index-swiper-item" wx:for="{{ src }}" wx:key="{{ src }}">
+          <image wx:if="{{item}}" class="index-swiper-img" src="{{ IMGURL+item }}"></image>
+        </swiper-item>
+      </swiper>
+    </view>
+    <!--公司简介-->
+    <view class="description">
+      <text class="des-title">公司简介</text>
+      <view class="des-content">{{txtvalue}}</view>
+    </view>
+    <!--电话-->
+    <view class="tel">
+      <text class="des-title">电话：</text>
+      <view class="tel-txt">{{telnumber}}</view> 
+      <text class="tel-edit" bindtap="phone">拨打</text>
+    </view>
+    <!--地址-->
+    <view class="address">
+      <text class="des-title">地址：</text>
+      <view class="ad-txt">{{address}}</view>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Tabbar from '../compontents/tabbar'
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: '首页'
+    }
+    components = {
+      tabbar: Tabbar
+    }
+    data = {
+      selected: 1,
+      URL: '',
+      IMGURL: '',
+      src: [],
+      telnumber: '',
+      address: '',
+      txtvalue: ''
+    }
+    phone () {
+      wx.makePhoneCall({
+        phoneNumber: this.telnumber
+      })
+    }
+    onLoad () {
+      this.IMGURL = this.$parent.globalData.IMGURL
+      wx.showShareMenu({
+        withShareTicket: true
+      })
+      // 获取全局的url
+      this.URL = this.$parent.globalData.URL
+      // 回显数据
+      wx.request({
+        url: this.URL + 'store/selectStore',
+        method: 'POST',
+        data: {
+          storeId: this.$parent.globalData.storeId
+        },
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'storeId': this.$parent.globalData.storeId,
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        success: (res) => {
+          let data = res.data
+          let result = data.result
+          if (data.success) {
+            this.src = result.imgList || []
+            this.telnumber = result.mobile || ''
+            this.txtvalue = result.describe || ''
+            this.address = result.address || ''
+            this.dimension = result.dimension || ''
+            this.longitude = result.longitude || ''
+            this.$apply()
+          }
+        },
+        fail: function (res) {
+          console.log(res)
+        }
+      })
+    }
+  }
+</script>

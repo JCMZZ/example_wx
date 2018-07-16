@@ -1,0 +1,107 @@
+<style>
+.record {
+  padding: 50rpx 40rpx;
+  border-bottom: 1rpx solid #ccc;
+}
+.name {
+  display: inline-block;
+  width: 35%;
+}
+.time {
+  color: #2292C4;
+}
+.price {
+  float: right;
+  font-weight: 700;
+}
+.norecord {
+  color: #666;
+  text-align:center;
+  margin-top:50%;
+  font-size: 40rpx;
+}
+</style>
+
+<template>
+  <view>
+    <view class="record" wx:for="{{ list }}" wx:key="{{ list }}">
+      <!--<text class="name">购买{{ item.pName }}产品</text>-->
+      <text class="time">{{item.createTime}}</text>
+      <text wx:if="{{item.type === '2'}}" class="price">-{{item.changeScore}} 分</text>
+      <text wx:if="{{item.type === '1'}}" class="price">+{{item.changeScore}} 分</text>
+    </view>
+    <view wx:if="{{list.length <= 0}}" class="norecord">----- 您暂时没有积分记录 -----</view>
+    <!--查看更多-->
+    <view wx:if="{{list.length > 9}}" class="weui-panel__ft" bindtap="getMore">
+      <view class="weui-cell weui-cell_access weui-cell_link">
+        <view class="weui-cell__bd">查看更多</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </view>
+    </view>
+    <!--底部组件-->
+    <Tabbar></Tabbar>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import Tabbar from '../compontents/tabbar'
+import common from '../utils/common'
+export default class IntegralRecord extends wepy.page {
+  config = {
+    navigationBarTitleText: '积分明细'
+  }
+  components= {
+    Tabbar
+  }
+  data = {
+    URL: '',
+    list: [],
+    start: 1,
+    limit: 10
+  }
+  onLoad () {
+    this.URL = this.$parent.globalData.URL
+    if (wx.getStorageSync('islogin') !== false) {
+      this.getData(false)
+    }
+  }
+  // 获取积分明细数据
+  getData (isGetMore) {
+    if (wx.getStorageSync('islogin') !== false) {
+      wx.request({
+        url: this.URL + 'customer/findScoreRecord',
+        data: {
+          start: 1,
+          limit: this.start * this.limit
+        },
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'storeId': this.$parent.globalData.storeId,
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        method: 'POST',
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            if (isGetMore && data.result.list.length === this.list.length) {
+              common.tipAlert('没有更多数据了')
+              this.start--
+              return
+            }
+            this.list = data.result.list.map(value => {
+              value.createTime = value.createTime.substr(0, 19)
+              return value
+            })
+            this.$apply()
+          }
+        }
+      })
+    }
+  }
+  getMore () {
+    this.start++
+    this.getData(true)
+  }
+}
+</script>

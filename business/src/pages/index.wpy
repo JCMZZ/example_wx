@@ -1,0 +1,710 @@
+<style lang="less">
+page {
+  font-size: 32rpx;
+}
+// 轮播图部分
+.index-swiper {
+  height: 400rpx;
+}
+.index-swiper-img {
+  width: 750rpx;
+  height: 400rpx;
+}
+// 地图
+.shop-map {
+  width: 250rpx;
+  height: 170rpx;
+  position: absolute;
+  right: 0;
+  bottom: 120rpx;
+}
+// 轮播图的添加删除
+.swiper-handle {
+  position: absolute;
+  right:20rpx;
+  top:20rpx;
+  z-index:1000;
+  text{
+    box-sizing: border-box;
+    padding: 5rpx 15rpx;
+    color:#fff;
+    vertical-align: middle;
+    background: #67ABFE;
+    border-radius: 10rpx;
+    font-size: 32rpx;
+  }
+}
+.swiper-del {
+  margin-left: 30rpx;
+}
+// 公司简介
+.description {
+  padding: 30rpx;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #ccc;
+  position: relative;
+}
+.des-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #051956;
+}
+.des-content {
+  display: block;
+  text-indent:35rpx;
+  text-align:justify;
+  font-size: 27rpx;
+  width: 100%;
+  height: 340rpx;
+  white-space:normal;
+  word-break:break-all;
+  word-wrap:break-word;
+  color: #80849D;
+}
+.des-edit {
+  position: absolute;
+  right: 50rpx;
+  top: 33rpx;
+  color: #80849D;
+}
+.cancel1{
+  right:140rpx;  
+}
+// 电话
+.tel {
+  box-sizing: border-box;
+  height: 100rpx;
+  position: relative;
+  padding: 20rpx 30rpx;
+  display: flex;
+  align-items: center;
+  border-bottom: 1rpx solid #ccc;
+}
+.tel-edit {
+  position: absolute;
+  right: 50rpx;
+  color: #80849D;
+}
+.tel-txt {
+  display: inline-block;
+  width:350rpx;
+  height:41rpx;
+  color: #80849D;
+}
+.cancel2{
+  right:140rpx;
+}
+// 地址
+.ad-edit {
+  position: absolute;
+  right: 50rpx;
+  color: #80849D;
+}
+.address {
+  padding: 20rpx 30rpx;
+}
+.ad-txt {
+  width:100%;;
+  height:100rpx;
+  font-size: 30rpx;
+  margin-top:10rpx;
+  color: #80849D;
+}
+.cancel3{
+  right:140rpx;
+}
+.active {
+  color: #007ACC;
+}
+// 弹框
+.show-btn {
+  margin-top: 100rpx;
+  color: #22cc22;
+}
+.modal-mask {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: 0.5;
+  overflow: hidden;
+  z-index: 22222;
+  color: #fff;
+}
+.modal-dialog {
+  width: 540rpx;
+  overflow: hidden;
+  position: fixed;
+  top: 50%;
+  left: 0;
+  z-index: 99999;
+  background: #f9f9f9;
+  margin: -180rpx 105rpx;
+  border-radius: 10rpx;
+}
+.modal-title {
+  padding-top: 50rpx;
+  font-size: 36rpx;
+  color: #030303;
+  text-align: center;
+}
+.modal-content {
+  padding: 50rpx 32rpx;
+}
+.modal-text {
+  display: flex;
+  background: #fff;
+  border-radius: 4rpx;
+  font-size: 28rpx;
+  color:#999;
+}
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+  height: 86rpx;
+  border-top: 1px solid #dedede;
+  font-size: 34rpx;
+  line-height: 86rpx;
+}
+// 弹框按钮
+.btn-confirm {
+  width: 100%;
+  color: #ec5300;
+  text-align: center;
+}
+// dialog
+.editmodal-mask {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: 0.5;
+  overflow: hidden;
+  z-index: 22222;
+  color: #fff;
+}
+.editmodal-dialog {
+  width: 540rpx;
+  height:445rpx;
+  overflow: hidden;
+  position: fixed;
+  top:40rpx;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  z-index: 99999;
+  background: #f9f9f9;
+  border-radius: 10rpx;
+}
+.editmodal-content {
+  padding: 20rpx 20rpx 0;
+}
+.editmodal-txt {
+  width: 100%;
+  height: 300rpx;
+  border: 1rpx solid #ccc;
+}
+.editmodal-footer {
+  display: flex;
+  flex-direction: row;
+  font-size: 34rpx;
+  button:first-child{
+    margin-top:15px; 
+  }
+}
+button[type=primary] {
+  color:#FFFFFF;
+  width: 130rpx;
+  background-color: #fff;
+  background-size: 150rpx 80rpx;
+  background-repeat: no-repeat;
+  background-position:-5rpx -5rpx;
+}
+button[size=mini] {
+  padding: 0;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <!--轮播图部分-->
+    <view wx:if="{{dataList}}">
+      <view class="swiper-handle">
+        <text class="swiper-add" bindtap="addPic">添加</text>
+        <text class="swiper-del" bindtap="delswiper">删除</text>
+      </view>
+      <swiper
+        wx:if="{{bannerCache}}"
+        class="index-swiper"
+        indicator-dots="{{true}}"
+        autoplay="{{true}}"
+        interval="3000"
+        circular="{{true}}"
+        duration="1000"
+        show-confirm-bar="{{false}}"
+        bindchange="getImgUrl"
+        indicator-color="rgba(255, 255, 255, .5)"
+        indicator-active-color="#fff">
+        <swiper-item class="index-swiper-item"  wx:for="{{ src }}" wx:key="{{ item }}" item-id="{{item}}">
+          <image wx:if="{{item}}" class="index-swiper-img" src="{{ IMGURL+item }}"></image>
+        </swiper-item>
+      </swiper>
+    </view>
+    <!--公司简介-->
+    <view wx:if="{{dataList}}" class="description">
+      <text class="des-title">公司简介</text>
+      <view class="des-content">{{describe}}</view>
+      <text class="des-edit" bindtap="editContent" data-name="describe">编辑</text>
+    </view>
+    <!--电话-->
+    <view wx:if="{{dataList}}" class="tel">
+      <text class="des-title">电话：</text>
+      <view class="tel-txt">{{tel}}</view> 
+      <text class="tel-edit" bindtap="editContent" data-name="tel">编辑</text>
+    </view>
+    <!--地址-->
+    <view wx:if="{{dataList}}" class="address">
+      <text class="des-title">地址：</text>
+      <text class="ad-edit" bindtap="editContent" data-name="address">编辑</text>
+      <view class="ad-txt">{{address}}</view>
+    </view>
+    <!-- 授权弹框 -->
+    <view class="modal-mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+      <view class="modal-dialog" wx:if="{{showModal}}">
+        <view class="modal-title">点击确定进行下一步操作</view>
+          <view class="modal-content">
+            <view class="modal-text">
+              提示：点击允许授权进行下一步操作
+            </view>
+          </view>
+        <view class="modal-footer">
+        <button class="btn-confirm" @tap="onConfirm" data-status="confirm" open-type="getUserInfo" bindgetuserinfo="getUserinfo">确定</button>
+      </view>
+    </view>
+    <!-- 操作弹框 -->
+    <view class="editmodal-mask" catchtouchmove="preventTouchMove" wx:if="{{showeditModal}}"></view>
+      <view class="editmodal-dialog" wx:if="{{showeditModal}}">
+      <view class="editmodal-content">
+        <textarea class="editmodal-txt" maxlength="-1" bindinput="getvalue" value="{{modalvalue}}"></textarea>
+      </view> 
+      <view class="editmodal-footer">
+        <button @tap="saveInput(type)" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini">确定</button>
+        <button @tap="cancelInput" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini">取消</button>
+      </view>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import common from '../utils/common'
+  import Tabbar from '../compontents/tabbar'
+  // import business from '../utils/business'
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: '首页'
+    }
+    components = {
+      tabbar: Tabbar
+    }
+    data = {
+      selected: 1,
+      delImagUrl: '',
+      URL: '',
+      IMGURLEDIT: '',
+      bannerCache: true,
+      IMGURL: '',
+      showModal: false,
+      code: '',
+      encryptedData: '',
+      iv: '',
+      rawData: '',
+      signature: '',
+      userInfo: {},
+      sessionId: '',
+      isReg: '',
+      src: [],
+      // 电话
+      tel: '',
+      // 地址
+      address: '',
+      addressC: '',
+      // 简介
+      describe: '',
+      // 经纬度
+      latitude: '',
+      longitude: '',
+      // 后台返回数据
+      dataList: '',
+      // 编辑弹框
+      showeditModal: false,
+      modalvalue: '',
+      newvalue: '',
+      modaltype: ''
+    }
+    // 授权部分相关操作
+    methods = {
+      preventTouchMove() {
+      },
+      // 对话框确认按钮点击事件
+      onConfirm () {
+        this.showModal = false
+      }
+    }
+    // 获取图片url
+    getImgUrl (e) {
+      this.delImagUrl = e.detail.currentItemId
+    }
+    // 添加图片跳转修图页
+    addPic () {
+      if (this.src.length >= 5) {
+        common.tipAlert('最多可添加5张图片！')
+        return
+      }
+      wx.redirectTo({
+        url: 'handlepic'
+      })
+    }
+    // 删除轮播图
+    delswiper () {
+      wx.showModal({
+        title: '提示',
+        content: '确定执行删除操作吗?',
+        success: (res) => {
+          if (!res.confirm) { return }
+          if (this.src.length <= 0) {
+            common.tipAlert('请先上传至少一张图片!')
+            return
+          }
+          if (this.src.length <= 1) {
+            common.tipAlert('至少保留一张图片!')
+            return
+          }
+          // 截取图片名称
+          let imgName = this.delImagUrl.substring(this.delImagUrl.lastIndexOf('/') + 1)
+          // this.modifyRequest('/deleteImg', {imgName})
+          // this.backData()
+          wx.request({
+            url: this.URL + 'store/deleteImg',
+            data: {
+              imgName: imgName
+            },
+            method: 'POST',
+            header: {
+              'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+              'sessionId': wx.getStorageSync('sessionId')
+            },
+            success: (res) => {
+              let data = res.data
+              if (common.Interceptor(data)) {
+                if (!data.success) {
+                  common.tipAlert(data.message)
+                  return
+                }
+                this.bannerCache = false
+                this.$apply()
+                this.backData()
+              }
+            },
+            fail: function (res) {
+              console.log(res)
+            }
+          })
+        }
+      })
+    }
+    // 编辑
+    editContent (e) {
+      let type = e.currentTarget.dataset.name
+      switch (type) {
+        case 'describe':
+          this.modalvalue = this.describe
+          this.showeditModal = true
+          this.modaltype = 'describe'
+          break
+        case 'tel':
+          this.modalvalue = this.tel
+          this.showeditModal = true
+          this.modaltype = 'tel'
+          break
+        case 'address':
+          this.modalvalue = this.address
+          // this.showeditModal = true
+          this.modaltype = 'address'
+          // 获取地理位置权限
+          wx.getSetting({
+            success: (res) => {
+              if (!res.authSetting['scope.userLocation']) {
+                wx.authorize({
+                  scope: 'scope.userLocation',
+                  success: (res) => {
+                    wx.chooseLocation({
+                      type: 'wgs84',
+                      success: (res) => {
+                        res.address || (res.address = '中国地区')
+                        this.latitude = res.latitude
+                        this.longitude = res.longitude
+                        this.addressC = this.address
+                        this.newvalue = this.modalvalue = this.address = res.address
+                        this.showeditModal = true
+                        this.$apply()
+                      },
+                      fail: () => {
+                        console.log('choose==>返回')
+                        this.showeditModal = false
+                      }
+                    })
+                  },
+                  fail: () => {
+                    wx.openSetting({
+                      success: (res) => {
+                        if (res.authSetting['scope.userLocation']) {
+                          wx.chooseLocation({
+                            type: 'wgs84',
+                            success: (res) => {
+                              res.address || (res.address = '中国地区')
+                              this.latitude = res.latitude
+                              this.longitude = res.longitude
+                              this.addressC = this.address
+                              this.newvalue = this.modalvalue = this.address = res.address
+                              this.showeditModal = true
+                              this.$apply()
+                            },
+                            fail: () => {
+                              console.log('choose==>返回')
+                              this.showeditModal = false
+                            }
+                          })
+                        }
+                      }
+                    })
+                  }
+                })
+              } else {
+                wx.chooseLocation({
+                  type: 'wgs84',
+                  success: (res) => {
+                    res.address || (res.address = '中国地区')
+                    this.latitude = res.latitude
+                    this.longitude = res.longitude
+                    this.addressC = this.address
+                    this.newvalue = this.modalvalue = this.address = res.address
+                    this.showeditModal = true
+                    this.$apply()
+                  },
+                  fail: () => {
+                    console.log('choose==>返回')
+                    this.showeditModal = false
+                  }
+                })
+              }
+            }
+          })
+      }
+    }
+    // 取消编辑
+    cancelInput() {
+      this.showeditModal = false
+    }
+    getvalue(e) {
+      this.newvalue = e.detail.value
+    }
+    // 保存编辑
+    saveInput (type) {
+      this.showeditModal = false
+      // let type = e.currentTarget.dataset.name
+      switch (this.modaltype) {
+        case 'describe':
+          if (this.newvalue.length <= 0) {
+            common.tipAlert('公司简介不能为空')
+            return
+          }
+          if (!/^[\s\S]{1,300}$/.test(this.newvalue)) {
+            common.tipAlert('最多可输入300字')
+            return
+          }
+          this.describe = this.newvalue
+          this.modifyRequest('/updateDescribe', {describe: this.describe})
+          break
+        case 'tel':
+          if (!/^((0[0-9]{2,3}-)?([2-9][0-9]{6,7})+(-[0-9]{1,4})?|[48]0{2}-\d{3}-\d{4}|(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8})$/.test(this.newvalue)) {
+            common.tipAlert('请输入正确的联系方式')
+            return
+          }
+          this.tel = this.newvalue
+          this.modifyRequest('/updateMobile', {mobile: this.tel})
+          break
+        case 'address':
+          console.log(this.newvalue)
+          if (!/^[\s\S]{1,50}$/.test(this.newvalue)) {
+            common.tipAlert('请输入地址为1到30个字')
+          } else {
+            this.address = this.newvalue
+            this.modifyRequest('/updateAddress', {longitude: this.longitude, dimension: this.latitude, address: this.address})
+          }
+      }
+    }
+    // 保存请求公用方法
+    modifyRequest (urL, data) {
+      wx.request({
+        url: this.URL + 'store' + urL,
+        data,
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            if (!data.success) {
+              common.tipAlert(data.message)
+              return
+            }
+            // this.bannerCache = false
+            this.$apply()
+            // this.backData()
+          }
+        },
+        fail: function (res) {
+          console.log(res)
+        }
+      })
+    }
+    onLoad(option) {
+      // 获取全局的url
+      this.URL = this.$parent.globalData.URL
+      this.IMGURL = this.$parent.globalData.IMGURL
+      this.IMGURLEDIT = this.$parent.globalData.IMGURLEDIT
+      // 获取缓存中的isReg
+      this.isReg = wx.getStorageSync('isReg')
+      // 判断授权弹框是否显示
+      if (wx.getStorageSync('showModal') === 0) {
+        this.showModal = false
+        this.backData()
+      } else {
+        this.showModal = true
+      }
+      if (this.isReg === true) {
+        this.showModal = false
+        // wx.removeStorageSync('isReg')
+        this.backData()
+        wx.removeStorageSync('login')
+        wx.removeStorageSync('showModal')
+      }
+      if (wx.getStorageSync('login') === true) {
+        this.showModal = false
+        this.backData()
+      }
+      wx.showShareMenu({
+        withShareTicket: true
+      })
+      wx.login({
+        // 获取code
+        success: (res) => {
+          var JSCODE = res.code // 返回code
+          this.code = JSCODE
+          this.$apply()
+        }
+      })
+    }
+    // 获取用户信息
+    getUserinfo(e) {
+      if (e.detail.userInfo) {
+        this.showModal = false
+        this.encryptedData = e.detail.encryptedData
+        this.iv = e.detail.iv
+        this.rawData = e.detail.rawData
+        this.signature = e.detail.signature
+        this.userInfo = e.detail.userInfo
+        this.$apply()
+        // 授权请求
+        wx.request({
+          url: this.URL + 'wxLoginAuth',
+          data: {
+            code: this.code,
+            encryptedData: this.encryptedData,
+            iv: this.iv,
+            rawData: this.rawData,
+            signature: this.signature
+          },
+          header: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+          },
+          method: 'POST',
+          success: (res) => {
+            if (res.data.success === false) {
+              common.tipAlert(res.data.message)
+            } else {
+              // sessionID存储
+              this.sessionId = res.data.result.sessionId
+              this.isReg = res.data.result.isReg
+              wx.setStorageSync('sessionId', this.sessionId)
+              wx.setStorageSync('isReg', this.isReg)
+              if (res.data.success === false) {
+                wx.redirectTo({
+                  url: 'index'
+                })
+              } else {
+                if (!res.data.result.isReg) {
+                  wx.redirectTo({
+                    url: 'register'
+                  })
+                } else {
+                  wx.redirectTo({
+                    url: 'index'
+                  })
+                }
+              }
+            }
+          },
+          fail: () => {
+            common.tipAlert('网络错误')
+          }
+        })
+      } else {
+        this.showModal = true
+      }
+    }
+    // 回显数据
+    backData () {
+      wx.request({
+        url: this.URL + 'store/selectStore',
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            let result = this.dataList = data.result
+            if (data.success) {
+              this.src = !result.imgList || result.imgList.length <= 0 ? [] : result.imgList
+              this.tel = result.mobile || ''
+              this.describe = result.describe || ''
+              // this.address = this.addressTS = result.address || ''
+              this.address = result.address || ''
+              this.latitude = result.dimension || ''
+              this.longitude = result.longitude || ''
+              this.bannerCache = true
+              this.$apply()
+            } else {
+              common.tipAlert(data.message)
+            }
+          }
+        },
+        fail: () => {
+          common.tipAlert('网络错误')
+        }
+      })
+    }
+  }
+</script>

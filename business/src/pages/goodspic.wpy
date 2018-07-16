@@ -1,0 +1,135 @@
+<style lang="less">
+  page{
+   padding: 0;
+   background-color: #ccc; 
+  }
+  .cropper-buttons {
+    margin-top: 30rpx;
+    overflow: hidden;
+  }
+  .upload {
+    float: left;
+  }
+  .getCropperImage {
+    float: right;
+  }
+  .upload_btn{
+    box-sizing: border-box;
+    color: #fff;
+    width: 230rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    text-align: center;
+    margin: 20rpx;
+    // background-image: url('http://100.100.9.40:8082/img/btn2.png');
+    background-size: 230rpx 60rpx;
+    background-repeat: no-repeat;
+  }
+</style>
+
+<template>
+<view>
+  <cropper :options="cropperOpt"
+    @beforeImageLoad="bl"></cropper>
+  <view class="cropper-buttons">
+    <view
+      class="upload upload_btn"
+      style="background-image:url('{{IMGURLEDIT}}img/btn2.png')"
+      @tap="uploadTap">
+      添加图片
+    </view>
+    <view
+      class="getCropperImage upload_btn"
+      style="background-image:url('{{IMGURLEDIT}}img/btn2.png')"
+      @tap="getCropperImage">
+      使用图片
+    </view>
+  </view>
+</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import Cropper from '../compontents/wepy-com-cropper'
+// import common from '../utils/common'
+const device = wx.getSystemInfoSync()
+const width = device.windowWidth
+const height = device.windowHeight - 75
+
+export default class Goodspic extends wepy.page {
+  config = {
+    navigationBarTitleText: '上传图片'
+  }
+  data = {
+    isUpload: false,
+    IMGURLEDIT: '',
+    cropperOpt: {
+      width,
+      height,
+      scale: 2.5,
+      zoom: 8,
+      cut: {
+        x: (width - 360) / 2,
+        y: (height - 200) / 2,
+        width: 360,
+        height: 200
+      }
+    }
+  }
+  components = {
+    cropper: Cropper
+  }
+  methods = {
+    uploadTap () {
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: (res) => {
+          const src = res.tempFilePaths[0]
+          this.isUpload = true
+          //  获取裁剪图片资源后，给data添加src属性及其值
+          this.$invoke('cropper', 'pushOrigin', src)
+        }
+      })
+    },
+    getCropperImage () {
+      this.$invoke('cropper', 'getCropperImage', (src) => {
+        if (src && this.isUpload) {
+          // 裁剪后的图片上传给服务器
+          // 获取全局的url
+          wx.uploadFile({
+            url: this.$parent.globalData.URL + 'goods/uploadImg', // 仅为示例，非真实的接口地址
+            header: {
+              'content-type': 'multipart/form-data',
+              'sessionId': wx.getStorageSync('sessionId')
+            },
+            filePath: src,
+            name: 'file',
+            formData: {
+              'goodsId': wx.getStorageSync('goodsId')
+            },
+            success: (res) => {
+              wx.redirectTo({
+                url: 'goods-details'
+              })
+            }
+          })
+        } else {
+          this.toast('获取图片地址失败，请重新添加图片')
+        }
+      })
+    }
+  }
+  toast (title) {
+    wx.showToast({
+      title,
+      icon: 'none',
+      duration: 2000
+    })
+  }
+  onLoad () {
+    this.IMGURLEDIT = this.$parent.globalData.IMGURLEDIT
+  }
+}
+</script>

@@ -1,0 +1,336 @@
+<style>
+page{
+  padding: 0;
+}
+.user {
+  width: 30%;
+  padding: 40rpx;
+  display: inline-block;
+  box-sizing: border-box;
+}
+.user-img {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 10rpx;
+  vertical-align: middle;
+}
+.changeuser {
+  width: 200rpx;
+  height: 50rpx;
+  font-size: 18rpx;
+}
+.userinfo {
+  display: inline-block;
+  font-size: 32rpx;
+}
+page,
+.page,
+.page__bd{
+  height: 100%;
+}
+.page__bd{
+  padding-bottom: 0;
+}
+.weui-tab__content{
+  padding-top: 60px;
+  text-align: center;
+}
+.weui-cell__ft {
+  color: black;
+}
+/*dialog*/
+.show-btn {
+  margin-top: 100rpx;
+  color: #22cc22;
+}
+
+.modal-mask {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: 0.5;
+  overflow: hidden;
+  z-index: 22222;
+  color: #fff;
+}
+
+.modal-dialog {
+  width: 540rpx;
+  overflow: hidden;
+  position: fixed;
+  top: 50%;
+  left: 0;
+  z-index: 99999;
+  background: #fff;
+  margin: -180rpx 105rpx;
+  border-radius: 10rpx;
+}
+
+.modal-title {
+  padding-top: 50rpx;
+  font-size: 36rpx;
+  color: #030303;
+  text-align: center;
+}
+
+.modal-content {
+  padding: 50rpx 32rpx;
+}
+
+.modal-text {
+  display: flex;
+  background: #fff;
+  border-radius: 4rpx;
+  font-size: 28rpx;
+  color:#999;
+}
+
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+  height: 86rpx;
+  border-top: 1px solid #dedede;
+  font-size: 34rpx;
+  line-height: 86rpx;
+}
+
+.btn-cancel {
+  width: 50%;
+  color: #666;
+  text-align: center;
+  border-right: 1px solid #dedede;
+}
+
+.btn-confirm {
+  width: 100%;
+  color: #ec5300;
+  text-align: center;
+}
+.weui-cell__bd {
+  margin-left: 20rpx;
+}
+.navbtn {
+  width: 100%;
+  height: 100rpx;
+}
+.weui-cell__btnbd {
+  flex:none;
+}
+.loginbtn {
+  width:200rpx;
+  height:70rpx;
+  line-height:70rpx;
+  padding-left:0;
+  padding-right:0;
+  margin-left:50rpx;
+  margin-right: 0;
+  color: #333;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-bottom:40rpx;
+}
+.nick {
+  margin-top:40rpx;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <view class="user">
+      <image wx:if="{{avatarUrl}}" class="user-img" bindlongpress="chooseimage" src="{{ IMGURL + avatarUrl }}" mode="aspecFill"></image>
+      <button wx:if="{{!avatarUrl}}" class="user-img" open-type="getUserInfo" bindgetuserinfo="getUserinfo"></button>
+    </view>
+    <view class="userinfo">
+      <view wx:if="{{islogin !== false}}" class="nick">昵称：{{ nickname }}</view>
+      <button wx:if="{{islogin === false}}" plain="true" class="loginbtn" open-type="getUserInfo" bindgetuserinfo="getUserinfo">登录/注册</button>
+    </view>
+    <view class="weui-cells weui-cells_after-title">
+      <button 
+        wx:if="{{islogin === false}}" 
+        wx:for="{{ lists }}" 
+        wx:key="{{ item.text }}" 
+        class="navbtn weui-cell weui-cell_access" 
+        hover-class="weui-cell_active" open-type="getUserInfo" bindgetuserinfo="getUserinfo">
+        <view class="weui-cell__hd">
+          <image src="/images/{{item.src}}" style="margin-right: 5px;vertical-align: middle;width:20px; height: 20px;"></image>
+        </view>
+        <view class="weui-cell__btnbd">{{ item.text }}</view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '账户余额'}}"></view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '会员卡'}}"></view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '我的积分'}}"></view>
+      </button>
+      <navigator wx:if="{{islogin === ''}}" url="/pages/{{item.url}}" wx:for="{{ lists }}" wx:key="{{ item.text }}" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell__hd">
+          <image src="/images/{{item.src}}" style="margin-right: 5px;vertical-align: middle;width:20px; height: 20px;"></image>
+        </view>
+        <view class="weui-cell__bd">{{ item.text }}</view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '账户余额'}}">{{ balance }} 元</view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '会员卡'}}">{{ cardnumber }}</view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '我的积分'}}">{{ score }} 分</view>
+      </navigator>
+    </view>
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base64 from '../images/base64'
+  import Tabbar from '../compontents/tabbar'
+  import common from '../utils/common'
+  export default class Me extends wepy.page {
+    data= {
+      URL: '',
+      IMGURL: '',
+      selected: 3,
+      lists: [
+        {
+          text: '账户余额',
+          src: 'balance.png',
+          url: 'banlance-details'
+        },
+        {
+          text: '会员卡',
+          src: 'bankcard.png',
+          url: 'card-manage'
+        },
+        {
+          text: '我的积分',
+          src: 'score.png',
+          url: 'integral-record'
+        }
+      ],
+      nickname: '',
+      cardnumber: '',
+      balance: '',
+      score: '',
+      avatarUrl: '',
+      icon: '',
+      // 授权部分数据
+      code: '',
+      encryptedData: '',
+      iv: '',
+      rawData: '',
+      signature: '',
+      userInfo: {},
+      sessionId: '',
+      isReg: '',
+      islogin: false
+    }
+    components= {
+      tabbar: Tabbar
+    }
+    config = {
+      navigationBarTitleText: '我的'
+    }
+    onLoad() {
+      this.icon = base64.icon20
+      wx.login({
+        // 获取code
+        success: (res) => {
+          var JSCODE = res.code // 返回code
+          this.code = JSCODE
+          this.$apply()
+        }
+      })
+      this.URL = this.$parent.globalData.URL
+      this.IMGURL = this.$parent.globalData.IMGURL
+      // 展示我的页面
+      this.backData()
+    }
+    getUserinfo(e) {
+      if (e.detail.userInfo) {
+        this.encryptedData = e.detail.encryptedData
+        this.iv = e.detail.iv
+        this.rawData = e.detail.rawData
+        this.signature = e.detail.signature
+        this.userInfo = e.detail.userInfo
+        this.nickName = e.detail.userInfo.nickName
+        wx.request({
+          url: this.URL + 'wxLoginAuth',
+          data: {
+            code: this.code,
+            encryptedData: this.encryptedData,
+            iv: this.iv,
+            rawData: this.rawData,
+            signature: this.signature,
+            userInfo: this.userInfo
+          },
+          header: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+            'storeId': this.$parent.globalData.storeId
+          },
+          method: 'POST',
+          success: (res) => {
+            if (res.data.success === false) {
+              common.tipAlert(res.data.message)
+            } else {
+              // 在这里赋值并存储sessionId
+              this.sessionId = res.data.result.sessionId
+              this.isReg = res.data.result.isReg
+              wx.setStorageSync('sessionId', this.sessionId)
+              if (this.isReg === false) {
+                wx.navigateTo({
+                  url: 'register'
+                })
+              } else {
+                wx.redirectTo({
+                  url: 'me'
+                })
+              }
+            }
+          },
+          fail: () => {
+            console.log('me页请求失败')
+          }
+        })
+      }
+    }
+    setting () {
+      // 显示小程序当前设置权限的界面
+      wx.openSetting({
+        success: (res) => {
+          res.authSetting = {
+            'scope.userInfo': true,
+            'scope.userLocation': true,
+            'scope.camera': false
+          }
+        }
+      })
+    }
+    // 回显数据
+    backData () {
+      wx.request({
+        url: this.URL + 'customer/findCustomer',
+        data: {},
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'storeId': this.$parent.globalData.storeId,
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        method: 'POST',
+        success: (res) => {
+          let data = res.data
+          let result = data.result
+          if (result !== null) {
+            if (result.isLogin === false) {
+              this.islogin = result.isLogin
+              wx.setStorageSync('islogin', result.isLogin)
+            } else {
+              this.nickname = result.nickname
+              this.cardnumber = result.number
+              this.score = result.score
+              this.balance = result.balance
+              this.avatarUrl = result.customerHead
+              this.islogin = ''
+              wx.removeStorageSync('islogin')
+            }
+          }
+        }
+      })
+    }
+  }
+</script>

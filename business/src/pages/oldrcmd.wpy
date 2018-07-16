@@ -1,0 +1,406 @@
+<style lang="less">
+.page,
+.page__bd{
+    height: 100%;
+    box-sizing: border-box;
+}
+.page__bd{
+    padding-bottom: 0;
+}
+.weui-navbar {
+  border-bottom: none;
+}
+.weui-tab__content{
+    text-align: center;
+}
+.box {
+  margin: 40rpx 50rpx;
+  box-sizing: border-box;
+  border-radius: 50rpx;
+  border: 1rpx solid #797979;
+}
+.handle{
+  margin: 0 auto;
+  width: 50%;
+  color: #fff;
+  margin-bottom: 20rpx;
+  navigator{
+    vertical-align: middle;
+  }
+}
+.handle .first {
+  font-size: 35rpx;
+  box-sizing: border-box;
+  padding: 10rpx;
+  text-align: center;
+  background-size: 350rpx 120rpx;
+  background-repeat: no-repeat;
+  background-position:-20rpx -20rpx;
+  border-radius: 15rpx;
+}
+.handle .two {
+  width: 30%;
+}
+/*待支付*/
+.record {
+  margin-bottom: 15rpx;
+  font-size:32rpx;
+}
+.pay-main {
+  border-top: 1rpx solid #ccc;
+  padding: 25rpx 40rpx;
+}
+.pay {
+  width: 15%;
+  text-align: center;
+  color: #fff;
+  background-size: 110rpx 50rpx;
+  background-repeat: no-repeat;
+  background-position:-5rpx -5rpx;
+  border-radius: 10rpx;
+  display: inline-block;
+  font-size:28rpx;
+}
+.failpay {
+  background-color: #999;
+}
+/*已付费*/
+.price {
+  width: 25%;
+  text-align: right;
+  display: inline-block;
+  font-size:36rpx;
+}
+.pay-name {
+  width: 75%;
+  text-align: left;
+  display: inline-block;
+  font-size:32rpx;
+}
+.pay-time {
+  width: 85%;
+  text-align: left;
+  display: inline-block;
+  color: #ACACAC;
+  font-size:28rpx;
+}
+.norecord {
+  color: #666;
+  text-align:center;
+  font-size: 40rpx;
+  margin-top:50%;
+}
+.serprice {
+  float: right;
+}
+.servicemsg {
+  padding:35rpx 50rpx;
+  border-radius:15rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 36rpx;
+}
+// 已付费
+.sucrecord {
+  padding: 25rpx 40rpx;
+  border-top:1px solid #ccc;
+}
+.sucpay-time {
+  display: block;
+  width: 100%;
+  color: #ACACAC;
+  text-align: left;
+  font-size:28rpx;
+}
+// 已付费
+.sucrecord {
+  padding: 25rpx 40rpx;
+  border-top:1px solid #ccc;
+}
+.sucpay-time {
+  display: block;
+  width: 100%;
+  color: #ACACAC;
+  text-align: left;
+}
+</style>
+
+<template>
+<view class="page">
+  <view class="page__bd">
+    <view class="weui-tab">
+      <!--切换卡-->
+      <view class="weui-navbar">
+        <block wx:for="{{tabs}}" wx:key="*this">
+          <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+            <view class="weui-navbar__title">{{item}}</view>
+          </view>
+        </block>
+        <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+      </view>
+      <view class="weui-tab__panel">
+        <!--待推荐-->
+        <view hidden="{{activeIndex != 0}}">
+          <view class="box" wx:for="{{ list }}" wx:if="{{item.serviceState === 0}}" wx:key="{{item}}">
+            <view class="servicemsg">
+              <view>后台数据通过分析发现{{item.servicePeopleNum}}位老用户对{{ item.name }}产品感兴趣，是否进行“一键营销”？—— 共{{item.servicePrice}}元</view>
+            </view>
+            <view class="handle">
+              <navigator url='commsg?type={{item.serviceType}}' class="first" bindtap="sendmsg" data-id='{{item.id}}' style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">立即营销</navigator>
+            </view>
+          </view>
+          <view wx:if="{{list.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+          <!--查看更多-->
+          <view wx:if="{{list.length > 9}}" class="weui-panel__ft" bindtap="onegetMore">
+            <view class="weui-cell weui-cell_access weui-cell_link">
+              <view class="weui-cell__bd">查看更多</view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </view>
+          </view>
+        </view>
+        <!--待支付-->
+        <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
+          <view class="pay-main" wx:for="{{ list }}" wx:key="{{ list }}">
+            <view class="record" wx:if="{{item.serviceState === 1 || item.serviceState === 3}}" wx:key="{{ list }}">
+              <text class="pay-name">{{ item.name }}营销</text>
+              <text class="price">￥{{item.servicePrice}}</text>
+            </view>
+            <view>
+              <text class="pay-time">{{item.serviceTime}}</text>
+              <navigator url='payment' wx:if="{{item.serviceState === 1}}" class="pay" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">待支付</navigator>
+              <text wx:if="{{item.serviceState === 3}}" class="pay failpay">支付失败</text>
+            </view>
+          </view>
+          <view wx:if="{{list.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+          <!--查看更多-->
+          <view wx:if="{{list.length > 9}}" class="weui-panel__ft" bindtap="twogetMore">
+            <view class="weui-cell weui-cell_access weui-cell_link">
+              <view class="weui-cell__bd">查看更多</view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </view>
+          </view>
+        </view>
+        <!--已付费-->
+        <view class="weui-tab__content" hidden="{{activeIndex != 2}}">
+          <view>
+            <view class="sucrecord" wx:for="{{ list }}" wx:if="{{item.serviceState === 2}}" wx:key="{{ list }}">
+              <view>
+                <text class="pay-name">{{ item.name }}营销</text>
+                <text class="price">-{{item.servicePrice}}元</text>
+              </view>
+              <text class="sucpay-time">{{item.serviceTime}}</text>
+            </view>
+          </view>
+          <view wx:if="{{list.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+          <!--查看更多-->
+          <view wx:if="{{list.length > 9}}" class="weui-panel__ft" bindtap="threegetMore">
+            <view class="weui-cell weui-cell_access weui-cell_link">
+              <view class="weui-cell__bd">查看更多</view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- tabbar -->
+  <tabbar :selecte = "selected"></tabbar>
+</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import common from '../utils/common'
+import Tabbar from '../compontents/tabbar'
+export default class Oldrcmd extends wepy.page {
+  // var sliderWidth = 96 // 需要设置slider的宽度，用于计算中间位置
+  config = {
+    navigationBarTitleText: '精准营销'
+  }
+  components = {
+    tabbar: Tabbar
+  }
+  data = {
+    selected: 3,
+    tabs: ['待推荐', '待支付', '已付费'],
+    activeIndex: 0,
+    sliderOffset: 0,
+    sliderLeft: 0,
+    list: [],
+    sessionId: '',
+    URL: '',
+    IMGURLEDIT: '',
+    start: 1,
+    limit: 10,
+    serviceState: [0, 1, 2],
+    index: 0
+  }
+  onLoad () {
+    var that = this
+    var sliderWidth = 75
+    wx.getSystemInfo({
+      success: function(res) {
+        that.sliderLeft = (res.windowWidth / that.data.tabs.length - sliderWidth) / 2
+        that.sliderOffset = res.windowWidth / that.data.tabs.length * that.data.activeIndex
+      }
+    })
+  }
+  onShow () {
+    this.URL = this.$parent.globalData.URL
+    this.IMGURLEDIT = this.$parent.globalData.IMGURLEDIT
+    // 获取缓存数据
+    try {
+      var value = wx.getStorageSync('sessionId')
+      if (value) {
+        this.sessionId = value
+      }
+    } catch (e) {
+    }
+    // 待推荐请求
+    this.backData({
+      serviceType: 2,
+      serviceState: this.serviceState[this.index],
+      start: 1,
+      limit: this.start * this.limit
+    })
+    // 待支付
+    // if () {
+    //   wx.request({
+    //     url: this.URL + 'service/selectService',
+    //     data: {
+    //       serviceType: 2,
+    //       serviceState: 1,
+    //       start: 1,
+    //       limit: this.start * this.limit
+    //     },
+    //     header: {
+    //       'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+    //       'sessionId': this.sessionId
+    //     },
+    //     method: 'POST',
+    //     success: (res) => {
+    //       let data = res.data
+    //       if (common.Interceptor(data)) {
+    //         this.list = data.result.list
+    //         this.$apply()
+    //       }
+    //     }
+    //   })
+    // }
+  }
+  tabClick (e) {
+    this.sliderOffset = e.currentTarget.offsetLeft
+    this.activeIndex = e.currentTarget.id
+    // 待推荐
+    if (this.activeIndex === '0') {
+      this.index = 0
+      this.backData({
+        serviceType: 2,
+        serviceState: this.serviceState[this.index],
+        start: 1,
+        limit: this.start * this.limit
+      })
+    }
+    // 待支付
+    if (this.activeIndex === '1') {
+      this.index = 1
+      this.backData({
+        serviceType: 2,
+        serviceState: this.serviceState[this.index],
+        start: 1,
+        limit: this.start * this.limit
+      })
+    }
+    // 已付费
+    if (this.activeIndex === '2') {
+      this.index = 2
+      this.backData({
+        serviceType: 2,
+        serviceState: this.serviceState[this.index],
+        start: 1,
+        limit: this.start * this.limit
+      })
+    }
+  }
+  sendmsg (e) {
+    var id = e.currentTarget.dataset.id
+    // 存储serviceId
+    this.serviceId = id
+    try {
+      wx.setStorageSync('serviceId', this.serviceId)
+    } catch (e) {
+    }
+  }
+  // 待推荐获取更多
+  onegetMore () {
+    this.start = this.start + 1
+    this.index = 0
+    this.commongetMore()
+  }
+  // 待支付获取更多
+  twogetMore () {
+    this.start = this.start + 1
+    this.index = 1
+    this.commongetMore()
+  }
+  // 已付费获取更多
+  threegetMore () {
+    this.start = this.start + 1
+    this.index = 2
+    this.commongetMore()
+  }
+  // 数据回显
+  backData(data = {}) {
+    wx.request({
+      url: this.URL + 'service/selectService',
+      data,
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': this.sessionId
+      },
+      method: 'POST',
+      success: (res) => {
+        let data = res.data
+        if (common.Interceptor(data)) {
+          this.list = data.result.list
+          this.$apply()
+        }
+      }
+    })
+  }
+  // 获取更多数据显示
+  commongetMore(data = {}) {
+    wx.request({
+      url: this.URL + 'service/selectService',
+      data: {
+        serviceType: 2,
+        serviceState: this.serviceState[this.index],
+        start: this.start,
+        limit: this.limit
+      },
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': this.sessionId
+      },
+      method: 'POST',
+      success: (res) => {
+        let data = res.data
+        if (common.Interceptor(data)) {
+          if (data.result.list.length !== 0) {
+            for (var i = 0; i < data.result.list.length; i++) {
+              this.list.push(data.result.list[i])
+            }
+            this.$apply()
+          } else {
+            wx.showModal({
+              content: '没有更多数据了',
+              showCancel: false,
+              success: function (res) {}
+            })
+          }
+        }
+      }
+    })
+  }
+}
+</script>

@@ -1,0 +1,132 @@
+<style lang="less">
+.content {
+  margin-top: 25rpx;
+  color: #4A4A4A;
+}
+.weui-media-box__desc {
+  color: #4A4A4A;
+}
+.integral {
+  margin: 0 40rpx;
+}
+.norecord {
+  color: #666;
+  text-align:center;
+  font-size: 40rpx;
+  margin-top:50%;
+}
+.weui-media-box__thumb {
+  border-radius: 50%;
+}
+</style>
+
+<template lang="wxml">
+  <view class="page__bd">
+    <view class="weui-panel weui-panel_access">
+      <view class="weui-panel__bd">
+        <navigator wx:for="{{ list }}" wx:key="{{ item.id }}" url="edit-money" bindtap="getCustomerid" data-id="{{item.id}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+            <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+              <image wx:if="{{item.avatarUrl}}" class="weui-media-box__thumb" src="{{IMGURL+item.avatarUrl}}" />
+            </view>
+            <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+              <view class="weui-media-box__desc">用户昵称：{{item.nickname}}</view>
+              <view class="content">
+                <text class="">账户余额: {{ item.balance }}元</text>
+                <text class="integral">积分: {{ item.score }}分</text>
+                <text class="">等级: {{ item.cardName }}</text>
+              </view>
+            </view>
+            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+        </navigator>
+      </view>
+      <view wx:if="{{list.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+      <!--查看更多-->
+      <view wx:if="{{list.length > 9}}" class="weui-panel__ft" bindtap="getMore">
+        <view class="weui-cell weui-cell_access weui-cell_link">
+          <view class="weui-cell__bd">查看更多</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+        </view>
+      </view>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+// import api from '../api/api'
+import common from '../utils/common'
+import Tabbar from '../compontents/tabbar'
+export default class UserManage extends wepy.page {
+  config = {
+    navigationBarTitleText: '用户管理'
+  }
+  components = {
+    tabbar: Tabbar
+  }
+  data = {
+    selected: 3,
+    list: [],
+    URL: '',
+    IMGURL: '',
+    start: 1,
+    limit: 10
+  }
+  onShow () {
+    this.URL = this.$parent.globalData.URL
+    this.IMGURL = this.$parent.globalData.IMGURL
+    wx.request({
+      url: this.URL + 'userManage/customerList',
+      data: {
+        start: 1,
+        limit: this.start * this.limit
+      },
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': wx.getStorageSync('sessionId')
+      },
+      method: 'POST',
+      success: (res) => {
+        let data = res.data
+        if (common.Interceptor(data)) {
+          this.list = data.result.list
+          this.$apply()
+        }
+      }
+    })
+  }
+  getCustomerid (e) {
+    // 存储customerId
+    wx.setStorageSync('customerId', e.currentTarget.dataset.id)
+  }
+  getMore () {
+    this.start = this.start + 1
+    wx.request({
+      url: this.URL + 'userManage/customerList',
+      data: {
+        start: this.start,
+        limit: this.limit
+      },
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': wx.getStorageSync('sessionId')
+      },
+      method: 'POST',
+      success: (res) => {
+        let data = res.data
+        if (common.Interceptor(data)) {
+          if (data.result.list.length <= 0) {
+            common.tipAlert('没有更多数据了')
+          } else {
+            for (var i = 0; i < data.result.list.length; i++) {
+              this.list.push(data.result.list[i])
+            }
+            this.$apply()
+          }
+        }
+      }
+    })
+  }
+}
+</script>

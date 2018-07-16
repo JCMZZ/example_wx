@@ -1,0 +1,555 @@
+<style lang="less">
+.page,
+.page__bd{
+  height: 100%;
+  // box-sizing: border-box;
+}
+.page__bd{
+    padding-bottom: 0;
+}
+.weui-tab__content{
+    /*padding-top: 60px;*/
+    text-align: center;
+}
+.box {
+  margin: 15rpx 60rpx;
+  padding: 50rpx;
+  height: 300rpx;
+  border: 1rpx solid #000;
+  box-sizing: border-box;
+  border-radius: 50rpx;
+}
+/*推荐记录 付费记录*/
+.record {
+  margin-bottom: 15rpx;
+  font-size:32rpx;
+}
+.record_user{
+  width:100%;
+  display: flex;
+  justify-content: space-between;
+  image{
+    border-radius: 50%;
+  }
+}
+.pay-main {
+  border-top: 1rpx solid #ccc;
+  padding: 25rpx 40rpx;
+}
+.pay {
+  width: 15%;
+  text-align: center;
+  color: #fff;
+  background-size: 110rpx 50rpx;
+  background-repeat: no-repeat;
+  background-position:-5rpx -5rpx;
+  border-radius: 10rpx;
+  display: inline-block;
+  font-size:28rpx;
+}
+.failpay {
+  background-color: #999;
+}
+.price {
+  width: 25%;
+  text-align: right;
+  display: inline-block;
+  font-size:36rpx;
+}
+.pay-name {
+  width: 75%;
+  text-align: left;
+  display: inline-block;
+  font-size:32rpx;
+}
+.pay-time {
+  width: 85%;
+  text-align: left;
+  display: inline-block;
+  color: #ACACAC;
+  font-size:28rpx;
+}
+.panel_top{
+  width:100%;
+  height: 88rpx;
+  font-size: 30rpx;
+  view{
+    display: inline-block;
+  }
+  +checkbox-group .weui-cell{
+    position: static !important;
+    border-bottom:1rpx solid rgba(0,0,0,0.1);
+  }
+  border-bottom:1rpx solid rgba(0,0,0,0.1);
+}
+.check_all{
+  width: 190rpx;
+  .weui-cell{
+    padding-right:0;
+  }
+}
+.sortAll{
+  display: flex;
+  justify-content: space-between;
+  width:530rpx;
+  position: relative;
+  top:3rpx;
+  &>view{
+    width:175rpx;
+    position: relative;
+  }
+}
+.sortClass{
+  position: absolute;
+  border-width:15rpx;
+  border-style: solid;
+  border-color: transparent;
+  right: 16rpx;
+}
+.sort_top{
+  top:-5rpx;
+}
+.sort_bottom{
+  top:27rpx;
+}
+.self_btn_box{
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  justify-content:space-between;
+  height:100rpx;
+  width:100%;
+  background: whitesmoke;
+  align-items: center;
+  bottom: 110rpx; 
+  left: 0;
+  button{
+    width:300rpx;
+    height:80rpx;
+    line-height:80rpx;
+    display: inline-block;
+    background-size: 320rpx 100rpx;
+    background-repeat: no-repeat;
+    background-position: -10rpx -10rpx;
+  }
+}
+.self_padd_bottom{
+  height:100rpx;
+  width:100%;
+}
+.norecord {
+  color: #666;
+  text-align:center;
+  font-size: 40rpx;
+  margin-top:50%;
+}
+// 已付费
+.sucpay-time {
+  display: block;
+  width: 100%;
+  color: #ACACAC;
+  text-align: left;
+  font-size:28rpx;
+}
+.content {
+  margin-top: 25rpx;
+}
+.integral {
+  margin: 0 40rpx;
+}
+</style>
+
+<template>
+<view class="page">
+  <view class="page__bd">
+    <view class="weui-tab">
+      <view class="weui-navbar">
+        <block wx:for="{{tabs}}" wx:key="*this">
+          <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+            <view class="weui-navbar__title">{{item}}</view>
+          </view>
+        </block>
+        <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+      </view>
+      <view class="weui-tab__panel">
+        <!--待推荐-->
+        <view hidden="{{activeIndex != 0}}">
+          <view class="panel_top">
+            <view class="check_all">
+              <label class="weui-cell weui-check__label" @tap="checkAll">
+                <view class="weui-cell__hd weui-check__hd_in-checkbox">
+                    <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!checkAllActive}}"></icon>
+                    <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{checkAllActive}}"></icon>
+                </view>
+                <view class="weui-cell__bd">全选</view>
+              </label>
+            </view>
+            <view class="sortAll">
+              <view @tap="sortHandler('balance')">
+                余额排序
+                <text class="sortClass sort_top" style="border-bottom-color:{{balanceSort && sortActive === 'balance'?'#67ABFE':'#999'}};"></text> 
+                <text class="sortClass sort_bottom" style="border-top-color:{{!balanceSort && sortActive === 'balance'?'#67ABFE':'#999'}};"></text>              
+              </view>
+              <view @tap="sortHandler('integral')">
+                积分排序
+                <text class="sortClass sort_top" style="border-bottom-color:{{integralSort && sortActive === 'integral'?'#67ABFE':'#999'}};"></text> 
+                <text class="sortClass sort_bottom" style="border-top-color:{{!integralSort && sortActive === 'integral'?'#67ABFE':'#999'}};"></text>
+              </view>
+              <view @tap="sortHandler('class')">
+                等级排序
+                <text class="sortClass sort_top" style="border-bottom-color:{{classSort && sortActive === 'class'?'#67ABFE':'#999'}};"></text> 
+                <text class="sortClass sort_bottom" style="border-top-color:{{!classSort && sortActive === 'class'?'#67ABFE':'#999'}};"></text>
+              </view>
+            </view>
+          </view>
+          <!--待推荐-->
+          <checkbox-group bindchange="checkboxChange">
+            <label class="weui-cell weui-check__label" wx:for="{{stayRecommendList}}" wx:key="{{index}}">
+                <checkbox class="weui-check" value="{{item.id}}" checked="{{item.checked}}"/>
+                <view class="weui-cell__hd weui-check__hd_in-checkbox">
+                    <icon class="weui-icon-checkbox_circle" type="circle" data-id='{{item.id}}' size="23" wx:if="{{!item.checked}}"></icon>
+                    <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{item.checked}}"></icon>
+                </view>
+                <view class="record_user">
+                  <!--头像-->
+                  <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                    <image wx:if="{{item.avatarUrl}}" class="weui-media-box__thumb" src="{{IMGURL+item.avatarUrl}}" />
+                  </view>
+                  <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                    <text class="name">{{ item.nickname }}</text>
+                    <view class="content">
+                      <text class="">余额: {{ item.balance }}</text>
+                      <text class="integral">积分: {{ item.score }}</text>
+                      <text class="">等级: {{ item.cardName }}</text>
+                    </view>
+                  </view>
+                </view>
+            </label>
+          </checkbox-group>
+          <view wx:if="{{stayRecommendList.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+          <!--查看更多-->
+          <view wx:if="{{stayRecommendList.length > 9}}" class="weui-panel__ft" bindtap="getMore" data-type="待推荐">
+            <view class="weui-cell weui-cell_access weui-cell_link">
+              <view class="weui-cell__bd">查看更多</view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </view>
+          </view>
+          <view class="self_padd_bottom"></view>
+        </view>
+        <!--待支付-->
+        <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
+          <view class="pay-main" wx:for="{{ stayPayList }}" wx:key="{{ index }}">
+            <view class="record">
+              <text class="pay-name">对 {{ item.servicePeopleNum }} 位用户进行营销</text>
+              <text class="price">￥{{item.servicePrice}}</text>
+            </view>
+            <view>
+              <text class="pay-time">{{item.serviceTime}}</text>
+              <navigator url='payment' wx:if="{{item.serviceState === 1}}" class="pay" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">待支付</navigator>
+              <text wx:if="{{item.serviceState === 3}}" class="pay failpay">支付失败</text>
+            </view>
+          </view>
+          <view wx:if="{{stayPayList.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+          <!--查看更多-->
+          <view wx:if="{{stayPayList.length > 9}}" class="weui-panel__ft" bindtap="getMore" data-type="待支付">
+            <view class="weui-cell weui-cell_access weui-cell_link">
+              <view class="weui-cell__bd">查看更多</view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </view>
+          </view>
+        </view>
+        <!--已付费-->
+        <view class="weui-tab__content" hidden="{{activeIndex != 2}}">
+          <view class="pay-main" wx:for="{{ yetPayList }}" wx:key="{{ index }}">
+            <view class="sucrecord">
+              <view>
+                <text class="pay-name">已对 {{ item.servicePeopleNum }} 位用户进行营销</text>
+                <text class="price">-{{item.servicePrice}}元</text>
+              </view>
+              <text class="sucpay-time">{{item.serviceTime}}</text>
+            </view>
+          </view>
+          <view wx:if="{{yetPayList.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+          <!--查看更多-->
+          <view wx:if="{{yetPayList.length > 9}}" class="weui-panel__ft" bindtap="getMore" data-type="已付费">
+            <view class="weui-cell weui-cell_access weui-cell_link">
+              <view class="weui-cell__bd">查看更多</view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- tabbar -->
+  <tabbar :selecte = "selected"></tabbar>
+  <view hidden="{{activeIndex != 0}}" class="self_btn_box">
+    <button type="primary" bindtap="send" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">立即营销</button>
+  </view>
+</view>
+</template>
+
+<script>
+import wepy from 'wepy'
+// import api from '../api/api'
+import common from '../utils/common'
+import Tabbar from '../compontents/tabbar'
+export default class Oldrcmd extends wepy.page {
+  // var sliderWidth = 96 // 需要设置slider的宽度，用于计算中间位置
+  config = {
+    navigationBarTitleText: '自主营销'
+  }
+  components = {
+    tabbar: Tabbar
+  }
+  data = {
+    selected: 3,
+    checkAllActive: false,
+    tabs: ['待推荐', '待支付', '已付费'],
+    activeIndex: '0',
+    sliderOffset: 0,
+    sliderLeft: 0,
+    balanceSort: true,
+    integralSort: true,
+    classSort: true,
+    sortActive: 'balance',
+    sessionId: '',
+    orderType: [1, 1],
+    stayRecommendStart: 1,
+    stayRecommendList: [],
+    stayPayStart: 1,
+    stayPayList: [],
+    yetPayStart: 1,
+    yetPayList: [],
+    limit: 10,
+    URL: '',
+    IMGURL: '',
+    IMGURLEDIT: '',
+    type: '3'
+  }
+  methods = {
+    // 全选
+    checkAll () {
+      this.checkAllActive = !this.checkAllActive
+      this.stayRecommendList = this.stayRecommendList.map(value => {
+        value['checked'] = this.checkAllActive
+        return value
+      })
+    },
+    // 复选框change
+    checkboxChange (e) {
+      this.stayRecommendList = this.stayRecommendList.map(value => {
+        value['checked'] = e.detail.value.indexOf(value.id + '') !== -1
+        return value
+      })
+      this.checkAllActive = e.detail.value.length === this.stayRecommendList.length
+    },
+    // 发送按钮
+    send () {
+      if (!this.stayRecommendList.some(value => value.checked)) {
+        common.tipAlert('至少选择一个用户')
+        return
+      }
+      wx.setStorageSync('selfrcmd', this.stayRecommendList)
+      wx.navigateTo({
+        url: 'editmsg?type=' + this.type
+      })
+    },
+    // 排序栏
+    sortHandler (type) {
+      if (this.stayRecommendList.some(value => value.checked)) {
+        wx.showModal({
+          content: '重新排序会清除已选数据，是否排序？',
+          showCancel: true,
+          success: (res) => {
+            if (res.confirm) {
+              this.sortFunc(type)
+            }
+          }
+        })
+      } else {
+        this.sortFunc(type)
+      }
+    }
+  }
+  // 排序
+  sortFunc (type) {
+    wx.removeStorageSync('selfrcmd')
+    this.checkAllActive = false
+    let limit = this.limit * this.stayRecommendStart
+    this.sortActive = type
+    switch (type) {
+      case 'balance':
+        this.balanceSort = !this.balanceSort
+        this.orderType[0] = 1
+        this.orderType[1] = this.balanceSort ? 1 : 2
+        this.getData(false, {
+          serviceType: 3,
+          serviceState: 0,
+          orderType: 1,
+          orderMethod: this.orderType[1],
+          start: 1,
+          limit: limit
+        }, 0)
+        break
+      case 'integral':
+        this.integralSort = !this.integralSort
+        this.orderType[0] = 2
+        this.orderType[1] = this.integralSort ? 1 : 2
+        this.getData(false, {
+          serviceType: 3,
+          serviceState: 0,
+          orderType: 2,
+          orderMethod: this.orderType[1],
+          start: 1,
+          limit: limit
+        }, 0)
+        break
+      case 'class':
+        this.classSort = !this.classSort
+        this.orderType[0] = 3
+        this.orderType[1] = this.classSort ? 1 : 2
+        this.getData(false, {
+          serviceType: 3,
+          serviceState: 0,
+          orderType: 3,
+          orderMethod: this.orderType[1],
+          start: 1,
+          limit
+        }, 0)
+    }
+  }
+  // tab切换
+  tabClick (e) {
+    this.sliderOffset = e.currentTarget.offsetLeft
+    this.activeIndex = e.currentTarget.id
+    switch (this.activeIndex) {
+      case '1':
+        this.getData(true, {
+          serviceType: 3,
+          serviceState: 1,
+          start: 1,
+          limit: this.limit * this.stayPayStart
+        }, 1)
+        break
+      case '2':
+        this.getData(true, {
+          serviceType: 3,
+          serviceState: 2,
+          start: 1,
+          limit: this.limit * this.yetPayStart
+        }, 2)
+    }
+  }
+  // 获取更多数据
+  getMore (e) {
+    let type = e.currentTarget.dataset.type
+    switch (type) {
+      case '待推荐':
+        wx.removeStorageSync('selfrcmd')
+        // this.stayRecommendList = this.stayRecommendList.map(value => {
+        //   value['checked'] = false
+        //   return value
+        // })
+        // this.checkAllActive = false
+        this.stayRecommendStart++
+        this.getData(false, {
+          serviceType: 3,
+          serviceState: 0,
+          orderType: this.orderType[0],
+          orderMethod: this.orderType[1],
+          start: this.stayRecommendStart,
+          limit: this.limit
+        }, 0, true)
+        break
+      case '待支付':
+        this.stayPayStart++
+        this.getData(true, {
+          serviceType: 3,
+          serviceState: 1,
+          start: this.stayPayStart,
+          limit: this.limit
+        }, 1, true)
+        break
+      case '已付费':
+        this.yetPayStart++
+        this.getData(true, {
+          serviceType: 3,
+          serviceState: 2,
+          start: this.yetPayStart,
+          limit: this.limit
+        }, 2, true)
+    }
+  }
+  // 获取数据请求
+  getData (urlType, data, tabType, more) {
+    more || (more = false)
+    let url = urlType ? 'service/selectService' : 'service/selectUser'
+    wx.request({
+      url: this.URL + url,
+      data: data,
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': this.sessionId
+      },
+      method: 'POST',
+      success: (res) => {
+        let data = res.data
+        if (common.Interceptor(data)) {
+          let list = data.result.list
+          list instanceof Array && list.length <= 0 && more && (common.tipAlert('没有更多数据了'))
+          switch (tabType) {
+            case 0:
+              this.stayRecommendList = more ? this.stayRecommendList.concat(list) : list
+              if (more && this.checkAllActive) {
+                this.stayRecommendList = this.stayRecommendList.map(value => {
+                  value['checked'] = this.checkAllActive
+                  return value
+                })
+              }
+              this.$apply()
+              break
+            case 1:
+              this.stayPayList = more ? this.stayPayList.concat(list) : list
+              this.$apply()
+              break
+            case 2:
+              this.yetPayList = more ? this.yetPayList.concat(list) : list
+              this.$apply()
+          }
+        }
+      }
+    })
+  }
+  onLoad (option) {
+    // 获取全局变量
+    this.URL = this.$parent.globalData.URL
+    this.IMGURL = this.$parent.globalData.IMGURL
+    this.IMGURLEDIT = this.$parent.globalData.IMGURLEDIT
+    this.sessionId = wx.getStorageSync('sessionId')
+    if (option.type === 'userManage') {
+      // 待推荐请求
+      this.getData(false, {
+        serviceType: 3,
+        serviceState: 0,
+        orderType: this.orderType[0],
+        orderMethod: this.orderType[1],
+        start: this.stayRecommendStart,
+        limit: this.limit
+      }, 0)
+      wx.removeStorageSync('selfrcmd')
+    } else {
+      this.stayRecommendList = wx.getStorageSync('selfrcmd')
+    }
+    // 系统处理
+    var that = this
+    var sliderWidth = 75
+    wx.getSystemInfo({
+      success: function(res) {
+        that.sliderLeft = (res.windowWidth / that.data.tabs.length - sliderWidth) / 2
+        that.sliderOffset = res.windowWidth / that.data.tabs.length * that.data.activeIndex
+      }
+    })
+  }
+}
+</script>

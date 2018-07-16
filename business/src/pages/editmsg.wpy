@@ -1,0 +1,202 @@
+<style lang="less">
+.main {
+  padding: 100rpx 60rpx;
+  box-sizing: border-box;
+  font-size: 30rpx;
+}
+.content {
+  position: relative;
+  height: 400rpx;
+  box-sizing: border-box;
+  margin-top: 20rpx;
+  margin-bottom: 150rpx;
+  textarea{
+    height:420rpx !important;
+  }
+}
+.txt, .edit {
+  display: inline-block;
+}
+.send {
+  background-size: 240rpx 100rpx;
+  background-repeat: no-repeat;
+  background-position: -10rpx;
+  border-radius: 10rpx;
+  color: #fff;
+  width:220rpx;
+  height:80rpx;
+  line-height:80rpx;
+  font-size:30rpx;
+  position: fixed;
+  bottom: 340rpx;
+  top:auto;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+}
+.edit {
+  margin-left: 10rpx;  
+  background-color: #9A9A9A;
+  padding: 5rpx 10rpx;
+  border-radius: 10rpx;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 24rpx;
+}
+.active {
+  color: #67ABFE;
+}
+</style>
+
+<template>
+  <view class="main">
+    <text class="txt">
+      请在下面编辑您所要发送的内容：
+    </text>
+    <text wx:if="{{show}}" class="edit" bindtap="edit">编辑</text>
+    <text wx:if="{{!show}}" class="edit" bindtap="save">保存</text>
+    <text wx:if="{{!show}}" class="edit" bindtap="cancel">取消</text>
+    <view class="content">
+      <textarea wx:if="{{show}}" value="{{ msgvalue }}" placeholder="请在此处编写短信内容" maxlength="-1" disabled="{{true}}"></textarea>
+      <textarea wx:if="{{!show}}" value="{{ msgvalue }}" placeholder="请在此处编写短信内容" maxlength="-1" class="active" bindinput="msgCache"></textarea>
+    </view>
+    <view class="send" bindtap="handlemsg" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">发送</view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import md5 from '../utils/md5'
+import Tabbar from '../compontents/tabbar'
+import common from '../utils/common'
+export default class Editmsg extends wepy.page {
+  constructor () {
+    super()
+    this.getPayData = this.getPayData.bind(this)
+  }
+  config = {
+    navigationBarTitleText: '编辑短信内容'
+  }
+  components = {
+    tabbar: Tabbar
+  }
+  data = {
+    show: true,
+    IMGURLEDIT: '',
+    selected: 3,
+    disabled: 'true',
+    msgclass: '',
+    URL: '',
+    msgT: '',
+    msgvalue: '',
+    type: ''
+  }
+  // 编辑
+  edit () {
+    this.show = false
+  }
+  // 取消
+  cancel () {
+    this.msgT = this.msgvalue
+    this.show = true
+  }
+  // 保存
+  save () {
+    this.show = true
+    this.msgvalue = this.msgT
+  }
+  msgCache (e) {
+    this.msgT = e.detail.value
+    // console.log(this.msgT)
+  }
+  handlemsg () {
+    if (!this.show) {
+      this.alertTip('请先保存短信内容')
+      return
+    }
+    let customers = wx.getStorageSync('selfrcmd').filter(value => {
+      return value.checked
+    })
+    let customerIds = customers.map(value => {
+      return value.id
+    }).join()
+    // 校验短信内容
+    if (!this.msgT) {
+      this.alertTip('短信内容不能为空')
+    } else {
+      if (this.msgT.length > 1000) {
+        this.alertTip('短信内容不能超过1000字')
+      } else {
+        this.wxRequest('service/ownBatch', {customerIds, content: this.msgT}, this.getPayData)
+      }
+    }
+  }
+  getPayData (res) {
+    let data = res.data
+    if (common.Interceptor(data)) {
+      console.log(data)
+      if (data.success) {
+        wx.redirectTo({
+          url: 'payment?type=' + this.type
+        })
+        this.wxRequest('pay/buyService', {serviceType: data.result.serviceType, servicePrice: data.result.servicePrice, serviceId: data.result.id}, this.confirmPayment)
+      } else {
+        this.alertTip('发送失败')
+      }
+    }
+  }
+  confirmPayment (res) {
+    console.log(res)
+    let nonceStr = (Math.random().toString(36) + Math.random().toString(36).substring(2)).substr(2, Math.floor(Math.random() * (31 - 19) + 20))
+    console.log('nonceStr=====>', nonceStr.length)
+    let paySign = md5('appId=wxd678efh567hg6787&nonceStr=5K8264ILTKCH16CQ2502SI8ZNMTM67VS&package=prepay_id=wx2017033010242291fcfe0db70013231072&signType=MD5&timeStamp=1490840662&key=qazwsxedcrfvtgbyhnujmikolp111111').toUpperCase()
+    console.log(paySign === '22D9B4E54AB1950F51E0649E8810ACD6')
+    // let data = res.data
+    // if (common.Interceptor(data)) {
+    //   if (data.success) {
+    //     wx.requestPayment({
+    //       'timeStamp': new Date().getTime(),
+    //       'nonceStr': nonceStr,
+    //       'package': '',
+    //       'signType': 'MD5',
+    //       'paySign': '',
+    //       'success': (res) => {
+    //       },
+    //       'fail': (res) => {
+    //       }
+    //     })
+    //   } else {
+    //     this.alertTip('发送失败')
+    //   }
+    // }
+  }
+  wxRequest (url, data, func) {
+    wx.request({
+      url: this.URL + url,
+      data,
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': wx.getStorageSync('sessionId')
+      },
+      method: 'POST',
+      success: func
+    })
+  }
+  onLoad(option) {
+    this.URL = this.$parent.globalData.URL
+    this.IMGURLEDIT = this.$parent.globalData.IMGURLEDIT
+    this.type = option.type
+  }
+  // 提示框
+  alertTip (text) {
+    wx.showModal({
+      content: text,
+      showCancel: false,
+      success: function (res) {}
+    })
+  }
+}
+</script>

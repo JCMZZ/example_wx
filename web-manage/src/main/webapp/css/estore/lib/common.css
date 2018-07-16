@@ -1,0 +1,258 @@
+
+/***
+鼠标悬浮上是白色
+---------------------------------------------------****/
+.btn_box {
+	width: 20px;
+	height: 20px;
+	background: -moz-linear-gradient(top, #f8f8f8, #e9e9e9);
+	background: -ms-linear-gradient(top, #f8f8f8, #e9e9e9);
+	background: -o-linear-gradient(top, #f8f8f8, #e9e9e9);
+	background: -webkit-linear-gradient(top, #f8f8f8, #e9e9e9);
+	border: 1px solid #cbcbcb;
+	position: relative;
+	margin: 0 auto;
+	display: inline-block;
+	vertical-align: middle;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+.btn_box:hover {
+	background: -moz-linear-gradient(top, #3373b7, #5494dc);
+	background: -ms-linear-gradient(top, #3373b7, #5494dc);
+	background: -o-linear-gradient(top, #3373b7, #5494dc);
+	background: -webkit-linear-gradient(top, #3373b7, #5494dc);
+	border: 1px solid #5494dc;
+	cursor: pointer;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+.btn_boxNew:hover {
+	border: 1px solid #ccc;
+	cursor: pointer;
+}
+
+.iCon {
+	background: url(../../img/new_icon.png) no-repeat 3px 3px;
+	width: 19px;
+	height: 19px;
+	cursor: pointer;
+	vertical-align: middle;
+	display: inline-block;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 999;
+}
+/**灰色背景删除图标**/
+.grey-delete {
+	background-position: -298px -548px;
+}
+.grey-write {
+	background-position: -47px -499px;
+}
+.grey-addModify {
+	background-position: -248px -98px;
+}
+.grey-disable {
+	background-position: -48px -597px;
+}
+
+.grey-enable {
+	background-position: 3px -598px;
+}
+
+.grey-reset {
+	background-position: 2px -648px;
+}
+/* .grey-see {
+	background-position: -148px -448px;
+} */
+.grey-recharge {
+	background-position: -98px -648px;
+}
+
+.grey-deduction {
+	background-position: -48px -648px;
+}
+
+.grey-writetime {
+	background-position: -149px -653px;
+} /*修改定时时间*/
+.grey-success {
+	background-position: -197px -649px;
+} /*提交成功*/
+.grey-error {
+	background-position: -248px -649px;
+} /*提交失败*/
+.grey-deployment {
+	background-position: -297px -648px;
+} /*调配*/
+.grey-see {
+	background-position: -399px -649px;
+} /*查看*/
+.grey-seepeople {
+	background-position: -148px -448px;
+}
+
+.grey-ruleConfigurate {
+	background-position: -448px -648px;
+} /*规则配置*/
+.grey-bind {
+	background-position: -347px -598px;
+} /*绑定*/
+.grey-unlock {
+	background-position: -348px -500px;
+}
+
+.grey-lock {
+	background-position: -398px -499px;
+}
+
+.grey-restore {
+	background-position: -248px -48px;
+}
+/*置顶*/
+.grey-settop {
+	background-position: -298px -148px;
+}
+/*回收*/
+.grey-recovery {
+	background-position: -98px -98px;
+}
+/*下载*/
+.grey-download {
+	background-position: -398px -147px;
+}
+/*上传*/
+.grey-upload {
+	background-position: -298px -148px;
+}
+/*补款*/
+.grey-fill{
+	background-position: -347px -698px;
+}
+/*售价*/
+.grey-sell{
+	background-position: -247px -699px;
+}
+/**蓝色背景删除图标**/
+.btn_box:hover .iCon {
+	background: url(../../img/new_icon_w.png) no-repeat;
+}
+.btn_box:hover .grey-delete {
+	background-position: -298px -548px;
+}
+.btn_box:hover .grey-upload {
+	background-position: -298px -148px;
+}
+/*补款*/
+.btn_box:hover .grey-fill{
+	background-position: -348px -695px;
+}
+/*售价*/
+.btn_box:hover .grey-sell{
+	background-position: -247px -695px;
+}
+.btn_box:hover .grey-download { /*下载*/
+	background-position: -398px -147px;
+}
+.btn_box:hover .grey-addModify {
+	background-position: -248px -98px;
+}
+.btn_box:hover .grey-write {
+	background-position: -47px -499px;
+}
+
+.btn_box:hover .grey-disable {
+	background-position: -48px -597px;
+}
+
+.btn_box:hover .grey-enable {
+	background-position: 3px -598px;
+}
+
+.btn_box:hover .grey-reset {
+	background-position: 2px -648px;
+}
+
+.btn_box:hover .grey-see {
+	background-position: -151px -451px;
+}
+
+.btn_box:hover .grey-recharge {
+	background-position: -98px -648px;
+}
+
+.btn_box:hover .grey-deduction {
+	background-position: -48px -648px;
+}
+
+.btn_box:hover .grey-writetime {
+	background-position: -149px -653px;
+}
+
+.btn_box:hover .grey-success {
+	background-position: -197px -649px;
+}
+
+.btn_box:hover .grey-error {
+	background-position: -248px -649px;
+}
+
+.btn_box:hover .grey-deployment {
+	background-position: -297px -648px;
+}
+
+.btn_box:hover .grey-see {
+	background-position: -398px -649px;
+}
+
+.btn_box:hover .grey-seepeople {
+	background-position: -148px -448px;
+}
+
+.btn_box:hover .grey-ruleConfigurate {
+	background-position: -448px -648px;
+}
+
+.btn_box:hover .grey-bind {
+	background-position: -347px -598px;
+}
+
+.btn_box:hover .grey-lock {
+	background-position: -398px -499px;
+}
+
+.btn_box:hover .grey-unlock {
+	background-position: -348px -500px;
+}
+
+.btn_box:hover .grey-restore {
+	background-position: -248px -48px;
+}
+/*置顶*/
+.btn_box:hover .grey-settop {
+	background-position: -298px -148px;
+}
+/*回收*/
+.btn_box:hover .grey-recovery {
+	background-position: -98px -98px;
+}
+/**日期 icon**/
+.date {
+	background: url(../../images/dateinputbg.png) no-repeat scroll right
+		center #fff;
+}
+/****---------------------------------------------------
+                  常用按钮 end
+---------------------------------------------------****/
+

@@ -1,0 +1,82 @@
+<style>
+.txt {
+  text-align: center;
+  margin: 100rpx 0;
+}
+.company {
+  height: 80rpx;
+  line-height: 80rpx;
+  padding-left: 30rpx;
+  border-top: 1rpx solid #ccc;
+  border-bottom: 1rpx solid #ccc;
+  font-size: 28rpx;
+  margin-bottom: 100rpx;
+}
+</style>
+
+<template>
+  <view>
+    <view class="txt">
+      <rich-text nodes="{{nodes}}"></rich-text>
+      <rich-text nodes="{{nodes2}}"></rich-text>
+    </view>
+    <view class="company">收款方：北京亿美软通科技有限公司</view>
+    <view class="weui-btn-area">
+      <button class="weui-btn" bindtap="pay" type="primary">立即支付</button>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import Tabbar from '../compontents/tabbar'
+export default class Payment extends wepy.page {
+  config = {
+    navigationBarTitleText: '付款'
+  }
+  components = {
+    tabbar: Tabbar
+  }
+  data = {
+    selected: 3,
+    nodes: [{
+      name: 'h2',
+      children: [{
+        type: 'text',
+        text: '北京亿美软通科技有限公司'
+      }]
+    }],
+    nodes2: [{
+      name: 'h1',
+      children: [{
+        type: 'text',
+        text: '￥ 5000'
+      }]
+    }],
+    type: ''
+  }
+  methods = {
+    pay () {
+      console.log('触发')
+      switch (this.type) {
+        case '1': // 1新客
+          console.log(this.type)
+          break
+        case '2': // 2老客
+          console.log(this.type)
+          break
+        case '3': // 3自主
+          console.log(this.type)
+      }
+      wx.redirectTo({
+        url: 'successpay?type=' + this.type
+      })
+    }
+  }
+  onLoad(option) {
+    this.type = option.type
+  }
+}
+</script>

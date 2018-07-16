@@ -1,0 +1,242 @@
+<style lang="less">
+page{
+  color: #838B9D;
+}
+.index-swiper {
+  height: 436rpx;
+  padding-top: 42rpx;
+  box-sizing: border-box;
+}
+.index-swiper-img {
+  width: 600rpx;
+  height: 352rpx;
+  display: block;
+  margin: 0 auto;
+}
+.cardname {
+  box-sizing: border-box;
+  display: inline-block;
+  width: 180rpx;
+  height: 50rpx;
+  margin-top: 20rpx;
+  margin-left: 40%;
+  font-size: 35rpx;
+  vertical-align:bottom;
+}
+.page__bd {
+  margin-top: 10rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  .card{
+    font-size: 35rpx;
+    font-weight: 700;
+  }
+  textarea{
+    width: 100%;
+    height: 500rpx;
+    font-size: 30rpx;
+  }
+}
+.edit {
+  margin: 0 30rpx;
+  font-size: 30rpx;
+}
+.active {
+  color: #007ACC;
+}
+.cancel1{
+  margin-right: 30rpx;
+}
+.edit-img {
+  width: 40rpx;
+  height: 40rpx;
+  vertical-align: middle;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <view style="">
+      <swiper
+        class="index-swiper"
+        indicator-dots="true"
+        interval="2500"
+        duration="1000"
+        indicator-color="rgba(255, 255, 255, .5)"
+        indicator-active-color="#fff"
+        bindchange="getindex">
+        <swiper-item class="index-swiper-item"  wx:for="{{ src }}" wx:key="{{ src }}" item-id="{{item}}">
+          <image wx:if="{{item}}" class="index-swiper-img" src="{{ item }}"></image>
+        </swiper-item>
+      </swiper>
+      <input wx:if="{{!nameshow}}" class="cardname active" value="{{list[index].name}}" maxlength="{{5}}" bindinput="cardNameCache"></input>
+      <view wx:if="{{nameshow}}" class="cardname">{{list[index].name}}</view>
+      <image wx:if="{{nameshow}}" class="edit edit-img" src="../images/edit4.png" bindtap="editCardname">编辑</image>
+      <text wx:if="{{!nameshow}}" class="edit cancel1" bindtap="cancelCardname">取消</text>
+      <text wx:if="{{!nameshow}}" class="edit" bindtap="saveCardname">保存</text>
+    </view>
+    <view class="page__bd">
+      <text class="card">卡片说明：</text>
+      <image src="../images/edit4.png" wx:if="{{show}}" class="edit edit-img" bindtap="editTxt">编辑</image>
+      <text wx:if="{{!show}}" class="edit" bindtap="cancelTxt">取消</text>
+      <text wx:if="{{!show}}" class="edit" bindtap="saveTxt">保存</text>
+      <textarea wx:if="{{!show}}" value="{{ list[index].cardDescribe }}" class="active" bindinput="describeTxtCache"></textarea>
+      <textarea disabled="{{true}}" wx:if="{{show}}" value="{{ list[index].cardDescribe }}"></textarea>
+    </view>
+    <!-- tabber -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import common from '../utils/common'
+  import Tabbar from '../compontents/tabbar'
+  export default class CardManage extends wepy.page {
+    config = {
+      navigationBarTitleText: '卡片管理'
+    }
+    components= {
+      tabbar: Tabbar
+    }
+    data = {
+      src: ['/images/goldcard.png', '/images/yincard.png', '/images/tongcard.png'],
+      selected: 3,
+      nameshow: true,
+      show: true,
+      sessionId: '',
+      URL: '',
+      list: [],
+      index: 0,
+      nameT: '',
+      cardId: '',
+      describeT: ''
+    }
+    // 卡号缓存
+    cardNameCache (e) {
+      this.nameT = e.detail.value
+    }
+    // 编辑卡名
+    editCardname() {
+      this.nameshow = false
+    }
+    // 取消编辑卡名
+    cancelCardname () {
+      this.nameT = this.list[this.index].name
+      this.nameshow = true
+    }
+    // 保存卡名
+    saveCardname() {
+      if (!/^[\s\S]{1,5}$/.test(this.nameT)) {
+        common.tipAlert('请输入1到5个字')
+        return
+      }
+      this.nameshow = true
+      wx.request({
+        url: this.URL + 'cardType/updateName',
+        data: {
+          id: this.cardId,
+          name: this.nameT
+        },
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': this.sessionId
+        },
+        method: 'POST',
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            if (data.success === false) {
+              common.tipAlert(data.message)
+            } else {
+              this.backData()
+            }
+          }
+        }
+      })
+    }
+    describeTxtCache (e) {
+      this.describeT = e.detail.value
+    }
+    // 编辑描述
+    editTxt () {
+      this.show = false
+    }
+    // 取消描述
+    cancelTxt () {
+      this.describeT = this.list[this.index].cardDescribe
+      this.show = true
+    }
+    // 保存描述
+    saveTxt (e) {
+      if (this.describeT.length <= 0) {
+        common.tipAlert('输入不能为空')
+        return
+      }
+      if (this.describeT.length >= 300) {
+        common.tipAlert('输入不能大于300个字')
+        return
+      }
+      this.show = true
+      wx.request({
+        url: this.URL + 'cardType/updateCardDescribe',
+        data: {
+          cardId: this.cardId,
+          cardDescribe: this.describeT
+        },
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': this.sessionId
+        },
+        method: 'POST',
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            if (data.success === false) {
+              common.tipAlert(data.message)
+            } else {
+              this.backData()
+            }
+          }
+        }
+      })
+    }
+    // 获取滑动块的索引
+    getindex (e) {
+      this.index = e.detail.current
+      this.show = true
+      this.nameshow = true
+      this.backData()
+    }
+    onShow () {
+      this.URL = this.$parent.globalData.URL
+      // 获取缓存数据
+      this.sessionId = wx.getStorageSync('sessionId')
+      this.backData()
+    }
+    // 回显数据
+    backData() {
+      wx.request({
+        url: this.URL + 'cardType/findCardType',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': this.sessionId
+        },
+        data: {
+          storeId: this.$parent.globalData.storeId
+        },
+        method: 'POST',
+        success: (res) => {
+          let data = res.data
+          if (common.Interceptor(data)) {
+            this.list = res.data.result
+            this.nameT = this.list[this.index].name || ''
+            this.describeT = this.list[this.index].cardDescribe || ''
+            this.cardId = this.list[this.index].id || ''
+            this.$apply()
+          }
+        }
+      })
+    }
+  }
+</script>

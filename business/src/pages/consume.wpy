@@ -1,0 +1,131 @@
+<style>
+.record {
+  padding: 50rpx 40rpx;
+  border-bottom: 1rpx solid #ccc;
+}
+.name {
+  display: inline-block;
+  width: 35%;
+}
+.time {
+  color: #323232;
+  font-size: 28rpx;
+}
+.price {
+  float: right;
+  font-weight: 700;
+  font-size: 32rpx;
+}
+/*没有消费记录*/
+.norecord {
+  color: #666;
+  text-align:center;
+  font-size: 40rpx;
+  margin-top:50%;
+}
+</style>
+
+<template>
+  <view>
+    <view class="record" wx:for="{{ list }}" wx:key="{{ list }}">
+      <!--<text class="name">购买{{ item.pName }}产品</text>-->
+      <text class="time">{{item.createTime}}</text>
+      <text wx:if="{{item.type === '2'}}" class="price">-{{item.changeBalance}} 元</text>
+      <text wx:if="{{item.type === '1'}}" class="price">+{{item.changeBalance}} 元</text>
+    </view>
+    <view wx:if="{{list.length <= 0}}" class="norecord">----- 您暂时没有消费记录 -----</view>
+    <!--查看更多-->
+    <view wx:if="{{list.length > 9}}" class="weui-panel__ft" bindtap="getMore">
+      <view class="weui-cell weui-cell_access weui-cell_link">
+        <view class="weui-cell__bd">查看更多</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+      </view>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import Tabbar from '../compontents/tabbar'
+import common from '../utils/common'
+export default class Consume extends wepy.page {
+  config = {
+    navigationBarTitleText: '消费记录'
+  }
+  components = {
+    tabbar: Tabbar
+  }
+  data = {
+    selected: 3,
+    list: [],
+    URL: '',
+    start: 1,
+    limit: 10
+  }
+  onShow () {
+    this.URL = this.$parent.globalData.URL
+    wx.request({
+      url: this.URL + 'userManage/findBalanceRecord',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': wx.getStorageSync('sessionId')
+      },
+      data: {
+        userCustomerId: wx.getStorageSync('customerId'),
+        start: this.start,
+        limit: this.limit
+      },
+      method: 'POST',
+      success: (res) => {
+        let data = res.data
+        if (common.Interceptor(data)) {
+          if (data.success === false) {
+            common.tipAlert(data.message)
+          } else {
+            this.list = data.result.list.map(value => {
+              value.createTime = value.createTime.substr(0, 19)
+              return value
+            })
+            this.$apply()
+          }
+        }
+      }
+    })
+  }
+  getMore () {
+    this.start = this.start + 1
+    wx.request({
+      url: this.URL + 'userManage/findBalanceRecord',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': wx.getStorageSync('sessionId')
+      },
+      data: {
+        userCustomerId: wx.getStorageSync('customerId'),
+        start: this.start,
+        limit: this.limit
+      },
+      method: 'POST',
+      success: (res) => {
+        let data = res.data
+        if (common.Interceptor(data)) {
+          if (data.success === false) {
+            common.tipAlert(data.message)
+          } else {
+            for (var i = 0; i < data.result.list.length; i++) {
+              this.list.push(data.result.list[i])
+            }
+            this.list = this.list.map(value => {
+              value.createTime = value.createTime.substr(0, 19)
+              return value
+            })
+            this.$apply()
+          }
+        }
+      }
+    })
+  }
+}
+</script>

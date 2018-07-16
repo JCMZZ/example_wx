@@ -1,0 +1,51 @@
+<style lang="less">
+@import 'style/iconfont.wxss';
+@import 'style/weui.wxss';
+// @import 'node_modules/weui/dist/style/weui.min.css';
+// @import '../node_modules/jquery-weui/dist/css/jquery-weui.min.css';
+page {
+  font-size: 24rpx;
+  color: #333;
+  padding-bottom: 110rpx;
+}
+image {
+  vertical-align: top;
+}
+</style>
+
+<script>
+// 把wepy导入到当前页面
+import wepy from 'wepy'
+
+// 从wepy.app继承一个类，并导出到当前配置项
+export default class extends wepy.app {
+  // app.json的配置项
+  config = {
+    // 项目的页面配置
+    pages: [
+      'pages/home',
+      'pages/register',
+      'pages/cart',
+      'pages/me',
+      'pages/goods-details',
+      'pages/banlance-details',
+      'pages/integral-record',
+      'pages/card-manage',
+      'pages/useragreement'
+    ],
+    // 导航与窗体配置
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#67ABFE',
+      navigationBarTitleText: 'C端',
+      navigationBarTextStyle: 'white'
+    }
+  }
+  globalData = {
+    storeId: 1,
+    URL: 'http://100.100.9.40:8080/consumerestore/', // 100.100.9.40  127.0.0.1
+    IMGURL: 'http://100.100.9.40:8082/',
+    IMGURLEDIT: 'https://weixin.m.cn/baseimg/'
+  }
+}
+</script>

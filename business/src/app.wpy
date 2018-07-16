@@ -1,0 +1,70 @@
+<style lang="less">
+@import 'style/iconfont.wxss';
+@import 'style/weui.wxss';
+page {
+  font-size: 24rpx;
+  color: #333;
+  padding-bottom:110rpx;
+}
+image {
+  vertical-align: top;
+}
+</style>
+
+<script>
+// 把wepy导入到当前页面
+import wepy from 'wepy'
+
+// 从wepy.app继承一个类，并导出到当前配置项
+export default class extends wepy.app {
+  constructor() {
+    super()
+    this.use('promisify')
+  }
+  // app.json的配置项
+  config = {
+    // 项目的页面配置
+    pages: [
+      'pages/index',
+      'pages/register',
+      'pages/selfrcmd',
+      'pages/user-manage',
+      'pages/commsg',
+      'pages/editmsg',
+      'pages/me',
+      'pages/cart',
+      'pages/edit-money',
+      'pages/editgoods',
+      'pages/consume',
+      'pages/integral-record',
+      'pages/newrcmd',
+      'pages/payment',
+      'pages/successpay',
+      'pages/oldrcmd',
+      'pages/card-manage',
+      'pages/map',
+      'pages/failpay',
+      'pages/goods-details',
+      'pages/handlepic',
+      'pages/goodspic',
+      'pages/addgoodspic',
+      'pages/binduser',
+      'pages/useragreement',
+      'pages/addgoods'
+    ],
+    // 导航与窗体配置
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#67ABFE',
+      navigationBarTitleText: '小程序',
+      navigationBarTextStyle: 'white'
+    }
+  }
+  // 全局变量
+  globalData = {
+    URL: 'http://100.100.9.40:8080/businessestore/',   // 100.100.9.40:8080   127.0.0.1:8080  weixin.m.cn
+    IMGURL: 'http://100.100.9.40:8082/',
+    IMGURLEDIT: 'https://weixin.m.cn/baseimg/'
+  }
+}
+</script>

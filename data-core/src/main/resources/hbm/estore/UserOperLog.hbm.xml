@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.system.UserOperLog" table="system_user_oper_log">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="userId" column="user_id" type="long" />
+		<property name="username" column="username" type="string" />
+		<property name="module" column="module" type="string" />
+		<property name="content" column="content" type="string" />
+		<property name="type" column="oper_type" type="string" />
+		<property name="operTime" column="oper_time" type="timestamp" />
+		<property name="service" column="service" type="string" />
+	</class>
+</hibernate-mapping>

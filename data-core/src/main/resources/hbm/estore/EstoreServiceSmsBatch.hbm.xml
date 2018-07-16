@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.estore.EstoreServiceSmsBatch" table="estore_service_sms_batch">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="serviceId" column="service_id" type="long" />
+		<property name="sendNum" column="send_num" type="int" />
+		<property name="realNum" column="real_num" type="int" />
+		<property name="content" column="content" type="string" />	
+		<property name="createTime" column="create_time" type="timestamp" />
+	</class>
+</hibernate-mapping>

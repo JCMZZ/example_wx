@@ -1,0 +1,490 @@
+<style lang="less">
+/*@import '/style/weui.wxss';*/
+page{
+  font-size: 28rpx;
+}
+.index-swiper {
+  height: 400rpx;
+}
+.index-swiper-img {
+  width: 750rpx;
+  height: 400rpx;
+}
+.dif {
+  font-size: 36rpx;
+  font-weight: 700;
+}
+.old {
+  text-decoration: line-through;
+}
+.main {
+  padding: 60rpx 40rpx 40rpx 30rpx;
+}
+.desc {
+  margin-top: 70rpx;
+  // height: 250rpx;
+  position: relative;
+  color: #A4A4A4;
+  textarea{
+    height:100%;
+  }
+}
+.descsize {
+  font-size: 30rpx;
+}
+.params {
+  margin: 30rpx 0;
+}
+/*轮播图的添加删除*/
+.swiper-handle {
+  position: absolute;
+  right:20rpx;
+  top:20rpx;
+  z-index:1000;
+  text{
+    box-sizing: border-box;
+    padding: 5rpx 15rpx;
+    color:#fff;
+    vertical-align: middle;
+    background: #67ABFE;
+    border-radius: 10rpx;
+    font-size: 32rpx;
+  }
+}
+.swiper-del {
+  margin-left: 30rpx;
+}
+.active {
+  color: #007ACC;
+}
+/*名字的编辑*/
+.name-edit {
+  margin-left: 30rpx;
+  color: #727272;
+  width: 40rpx;
+  height: 40rpx;
+  // vertical-align: middle;
+  margin-top: 9rpx;
+}
+.desc-edit {
+  margin-top: 0;
+}
+/*价格的编辑*/
+.oprice-edit {
+  margin-left:20rpx;
+  color: #727272;
+  width: 30rpx;
+  height: 30rpx;
+  // vertical-align: middle;
+  margin-top: 9rpx;
+}
+.nprice-edit {
+  margin-left:20rpx;
+  color: #727272;
+  width: 40rpx;
+  height: 40rpx;
+  margin-top: 4rpx;
+}
+.nptxt, .optxt {
+  // width:260rpx;
+  height:50rpx;
+  line-height: 50rpx;
+  display:inline-block;
+}
+.nptxt {
+  font-size: 20px;
+  font-weight: 700;
+  color: #E43B3E;
+}
+.optxt {
+  color: #A4A4A4;
+}
+.item_edit{
+  margin-top:50rpx;
+  display: inline-block;
+  align-items: center;
+  vertical-align: middle;
+}
+.discount-flex {
+  color: #A4A4A4;
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+}
+// dialog
+.modal-mask {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: 0.5;
+  overflow: hidden;
+  z-index: 22222;
+  color: #fff;
+}
+.modal-dialog {
+  width: 540rpx;
+  height:445rpx;
+  overflow: hidden;
+  position: fixed;
+  top:40rpx;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  z-index: 99999;
+  background: #f9f9f9;
+  border-radius: 10rpx;
+}
+.modal-content {
+  padding: 20rpx 20rpx 0;
+}
+.modal-txt {
+  width: 100%;
+  height: 300rpx;
+  border: 1rpx solid #ccc;
+}
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+  font-size: 34rpx;
+  button:first-child{
+    margin-top:15px; 
+  }
+}
+button[type=primary] {
+  color:#FFFFFF;
+  width: 130rpx;
+  background-color: #fff;
+  background-size: 150rpx 80rpx;
+  background-repeat: no-repeat;
+  background-position:-5rpx -5rpx;
+}
+button[size=mini] {
+  padding: 0;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <!--轮播图部分-->
+    <view class="swiper-handle">
+      <text class="swiper-add" bindtap="addpic">添加</text>
+      <text class="swiper-del" bindtap="delswiper">删除</text>
+    </view>
+    <swiper
+      wx:if="{{bannerCache}}"
+      class="index-swiper"
+      indicator-dots="{{true}}"
+      autoplay="{{true}}"
+      interval="3000"
+      circular="{{true}}"
+      duration="1000"
+      bindchange="getImgUrl"
+      indicator-color="rgba(255, 255, 255, .5)"
+      indicator-active-color="#fff">
+      <swiper-item  class="index-swiper-item" wx:for="{{ src }}" wx:key="{{ src }}" item-id="{{item}}">
+        <image wx:if="{{item}}" class="index-swiper-img" src="{{ IMGURL+item }}"></image>
+      </swiper-item>
+    </swiper>
+    <!--主体部分-->
+    <view class="main">
+      <view class="name">
+        <text class="nametxt dif">{{name}}</text>
+        <image class="name-edit" src="../images/editgoods.png" bindtap="editContent" data-name="name"></image>
+      </view>
+      <view class="item_edit nprice-flex">
+        <!--新价格-->
+        <text class="nptxt">￥{{ discountPrice }}</text>
+        <image class="nprice-edit editbtn" src="../images/edit3.png" bindtap="editContent"  data-name="discountPrice"></image>
+      </view>
+      <view class="item_edit discount-flex">
+        <!--折扣-->
+        <text class="discount">{{ discount }}折</text>
+      </view>
+      <view class="item_edit oprice-flex">
+        <!--原价-->
+        <text class="optxt old">￥{{ price }}</text>
+        <image class="oprice-edit npbtn" src="../images/edit5.png" bindtap="editContent" data-name="price"></image>
+      </view>
+      <view class="desc">
+        <text class="nametxt descsize">{{ describe }}</text>
+        <image class="name-edit desc-edit" src="../images/editgoods.png" bindtap="editContent" data-name="describe"></image>
+      </view>
+    </view>
+    <!-- 操作弹框 -->
+    <view class="modal-mask" catchtouchmove="preventTouchMove"  wx:if="{{showModal}}"></view>
+      <view class="modal-dialog" wx:if="{{showModal}}">
+      <view class="modal-content">
+        <textarea class="modal-txt" bindinput="getvalue" value="{{modalvalue}}"></textarea>
+      </view> 
+      <view class="modal-footer">
+        <button @tap="saveInput(type)" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini">确定</button>
+        <button @tap="cancelInput" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini">取消</button>
+      </view>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import TabBar from '../compontents/tabbar'
+import common from '../utils/common'
+export default class GoodsDetails extends wepy.page {
+  config = {
+    navigationBarTitleText: '产品详情'
+  }
+  components = {
+    tabbar: TabBar
+  }
+  data = {
+    bannerCache: true,
+    selected: 2,
+    src: [],
+    name: '',
+    describe: '',
+    IMGURL: '',
+    price: 0,
+    discount: '',
+    discountPrice: 0,
+    // 按钮的隐藏与显示
+    namebtn: true,
+    desbtn: true,
+    nPbtn: true,
+    oPbtn: true,
+    URL: '',
+    IMGURLEDIT: '',
+    delImagUrl: '',
+    showModal: false,
+    modalvalue: '',
+    newvalue: '',
+    modaltype: ''
+  }
+  onShow () {
+    this.URL = this.$parent.globalData.URL
+    this.IMGURL = this.$parent.globalData.IMGURL
+    this.IMGURLEDIT = this.$parent.globalData.IMGURLEDIT
+    this.backData()
+  }
+  openToast () {
+    wx.showToast({
+      title: '已收藏',
+      icon: 'success',
+      duration: 3000
+    })
+  }
+  // 添加选择图片
+  addpic () {
+    if (this.src.length >= 5) {
+      common.tipAlert('最多可添加5张图片！')
+      return
+    }
+    wx.redirectTo({
+      url: 'goodspic'
+    })
+  }
+  // 获取图片url
+  getImgUrl (e) {
+    this.delImagUrl = e.detail.currentItemId
+    // console.log(this.delImagUrl)
+  }
+  // 删除轮播图操作
+  delswiper () {
+    wx.showModal({
+      title: '提示',
+      content: '确定执行删除操作吗?',
+      success: (res) => {
+        if (!res.confirm) { return }
+        if (this.src.length <= 0) {
+          common.tipAlert('暂无可删除的图片!')
+          return
+        }
+        if (this.src.length <= 1) {
+          common.tipAlert('至少保留一张图片!')
+          return
+        }
+        // 截取图片名称
+        let imgName = this.delImagUrl.substring(this.delImagUrl.lastIndexOf('/') + 1)
+        let id = wx.getStorageSync('goodsId')
+        // this.modifyRequest('/deleteImg', {imgName, id})
+        wx.request({
+          url: this.URL + 'goods/deleteImg',
+          data: {
+            imgName: imgName,
+            id: id
+          },
+          method: 'POST',
+          header: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+            'sessionId': wx.getStorageSync('sessionId')
+          },
+          success: (res) => {
+            let data = res.data
+            if (common.Interceptor(data)) {
+              if (!data.success) {
+                common.tipAlert(data.message)
+                return
+              }
+              this.bannerCache = false
+              this.$apply()
+              this.backData()
+            }
+          },
+          fail: function (res) {
+            console.log(res)
+          }
+        })
+      }
+    })
+  }
+  // 编辑
+  editContent(e) {
+    this.showModal = true
+    let type = e.currentTarget.dataset.name
+    switch (type) {
+      case 'name':
+        this.modalvalue = this.name
+        this.modaltype = 'name'
+        break
+      case 'describe':
+        this.modalvalue = this.describe
+        this.modaltype = 'describe'
+        break
+      case 'price':
+        this.modalvalue = this.price
+        this.modaltype = 'price'
+        break
+      case 'discountPrice':
+        this.modalvalue = this.discountPrice
+        this.modaltype = 'discountPrice'
+        break
+    }
+    this.newvalue = this.modalvalue
+  }
+  // 取消编辑
+  cancelInput() {
+    this.showModal = false
+  }
+  getvalue(e) {
+    this.newvalue = e.detail.value
+  }
+  // 保存编辑
+  saveInput (type) {
+    this.showModal = false
+    let goodsId = wx.getStorageSync('goodsId')
+    switch (this.modaltype) {
+      case 'name':
+        if (/^\s*$/.test(this.newvalue)) {
+          common.tipAlert('名称不能为空！')
+          return
+        }
+        if (this.newvalue.length > 30) {
+          common.tipAlert('名称应在30字以内！')
+          return
+        }
+        this.name = this.newvalue
+        this.modifyRequest('/updateName', {name: this.name, id: goodsId})
+        break
+      case 'describe':
+        if (/^\s*$/.test(this.newvalue)) {
+          common.tipAlert('描述不能为空！')
+          return
+        }
+        if (this.newvalue.length > 100) {
+          common.tipAlert('描述应在100字以内！')
+          return
+        }
+        this.describe = this.newvalue
+        this.modifyRequest('/updateGoodsDescribe', {goodsDescribe: this.describe, id: goodsId})
+        break
+      case 'price':
+        if (this.newvalue > 0) {
+          if (this.newvalue > 1000000) {
+            common.tipAlert('输入金额控制在百万以内')
+          } else {
+            if (this.newvalue.indexOf('.') !== -1 && this.newvalue.substring(this.newvalue.indexOf('.') + 1).length > 2) {
+              common.tipAlert('小数点后最多两位！')
+            } else {
+              this.modifyRequest('/updatePrice', {price: this.newvalue, id: goodsId})
+            }
+          }
+        } else {
+          common.tipAlert('请输入大于0的合法数值！')
+        }
+        break
+      case 'discountPrice':
+        if (this.newvalue > 0) {
+          if (this.newvalue > 1000000) {
+            common.tipAlert('输入金额控制在百万以内')
+          } else {
+            if (this.newvalue.indexOf('.') !== -1 && this.newvalue.substring(this.newvalue.indexOf('.') + 1).length > 2) {
+              common.tipAlert('小数点后最多两位！')
+            } else {
+              this.modifyRequest('/updateDiscountPrice', {discountPrice: this.newvalue, id: goodsId})
+            }
+          }
+        } else {
+          common.tipAlert('请输入大于0的合法数值！')
+        }
+    }
+  }
+  // 保存请求公用方法
+  modifyRequest (urL, data) {
+    wx.request({
+      url: this.URL + 'goods' + urL,
+      data,
+      method: 'POST',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': wx.getStorageSync('sessionId')
+      },
+      success: (res) => {
+        let data = res.data
+        console.log(data)
+        if (common.Interceptor(data)) {
+          if (!data.success) {
+            common.tipAlert(data.message)
+            this.discountPrice = this.modalvalue
+            return
+          }
+          urL === '/updateDiscountPrice' && (this.discountPrice = this.newvalue)
+          urL === '/updatePrice' && (this.price = this.newvalue)
+          this.discount = data.result
+          this.$apply()
+        }
+      },
+      fail: function (res) {
+        console.log(res)
+      }
+    })
+  }
+  // 回显数据
+  backData () {
+    wx.request({
+      url: this.URL + 'goods/info',
+      method: 'POST',
+      data: {
+        goodsId: wx.getStorageSync('goodsId')
+      },
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': wx.getStorageSync('sessionId')
+      },
+      success: (res) => {
+        let result = res.data.result
+        this.name = this.nameTS = result.name || ''
+        this.describe = this.describeTS = result.goodsDescribe || ''
+        this.price = this.priceTS = result.price + '' || ''
+        this.discountPrice = this.discountPriceTS = result.discountPrice + '' || ''
+        this.discount = result.discount || ''
+        this.src = !result.imgList || result.imgList.length <= 0 ? [] : result.imgList
+        this.bannerCache = true
+        this.$apply()
+      }
+    })
+  }
+}
+</script>

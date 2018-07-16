@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.emay.estore.pojo.estore.EstoreUser" table="estore_user">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="mobile" column="mobile" type="string" />
+		<property name="gender" column="gender" type="integer" />
+		<property name="country" column="country" type="string" />
+		<property name="province" column="province" type="string" />
+		<property name="city" column="city" type="string" />
+		<property name="language" column="language" type="string" />
+		<property name="createTime" column="create_time" type="timestamp" />
+	</class>
+</hibernate-mapping>

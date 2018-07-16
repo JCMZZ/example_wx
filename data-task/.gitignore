@@ -1,0 +1,12 @@
+target
+.settings
+.classpath
+.project
+.svn
+.idea
+logs
+/target/
+/.tern-project
+.mymetadata
+/target
+/logs
