@@ -1,0 +1,15 @@
+
+<view>
+  
+  <canvas class="cropper" disable-scroll="{{$cropper$disable}}" bindtouchstart="$cropper$ts" bindtouchmove="$cropper$tm" bindtouchend="$cropper$te" style="width:{{$cropper$width}}px;height:{{$cropper$height}}px;background-color: rgba(0, 0, 0, 0.8)" binderror="$cropper$canvasError" canvas-id="cropper">
+  </canvas>
+
+  <view class="cropper-buttons">
+    <view class="upload upload_btn" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" bindtap="uploadTap">
+      添加图片
+    </view>
+    <view class="getCropperImage upload_btn" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" bindtap="getCropperImage">
+      使用图片
+    </view>
+  </view>
+</view>

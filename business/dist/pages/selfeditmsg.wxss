@@ -1,0 +1,50 @@
+@import "./../compontents/tabbar.wxss";
+
+.main {
+  padding: 100rpx 60rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+}
+.content {
+  position: relative;
+  height: 400rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  margin-top: 20rpx;
+  margin-bottom: 150rpx;
+}
+.handle{
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 25px;
+  width: 100%;
+}
+.handle .common {
+  text-align: center;
+  border: 1px solid #666;
+  border-radius: 10rpx;
+}
+.handle .first {
+  margin-right: 30px;
+  background-color: #2292c4;
+  color: #fff;
+  width: 40%;
+}
+.handle .two {
+  width: 25%;
+}
+.edit {
+  width: 100rpx;
+  height: 40rpx;
+  font-size: 16rpx;
+  position: absolute;
+  right:30rpx;
+  bottom:30rpx;
+}
+.active {
+  background-color:#007ACC;
+  color: #fff;
+}
+textarea {
+  width: 280px;
+}

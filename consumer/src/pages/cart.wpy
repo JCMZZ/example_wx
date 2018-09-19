@@ -62,6 +62,13 @@
   margin-left: 200rpx;
   position: relative;
 }
+.change {
+  display: inline-block;
+  width: 46rpx;
+  height: 46rpx;
+  float: right;
+  margin-top: 47rpx;
+}
 .all-active {
   color: #67ABFE;
 }
@@ -71,6 +78,7 @@
 .top-active {
   border-bottom-color: #67ABFE;
 }
+
 </style>
 
 <template lang="wxml">
@@ -85,6 +93,7 @@
                 <text class="{{topclass}}"></text>
                 <text class="{{bottomclass}}"></text>
               </text>
+              <image src="../images/list2.png" class="change" @tap="togglelist">样式</image>
             </view>
             <view class="weui-panel__bd">
                 <navigator 
@@ -208,8 +217,14 @@
         success: (res) => {
           let data = res.data
           if (data.result.list !== null) {
-            this.list = data.result.list
-            this.$apply()
+            if (data.result.list.length < 2) {
+              wx.redirectTo({
+                url: 'goods-details'
+              })
+            } else {
+              this.list = data.result.list
+              this.$apply()
+            }
           }
         }
       })
@@ -244,6 +259,12 @@
         orderMethod: this.orderMethod,
         start: 1,
         limit: this.start * this.limit
+      })
+    }
+    // 切换样式
+    togglelist () {
+      wx.redirectTo({
+        url: 'cartlist'
       })
     }
   }

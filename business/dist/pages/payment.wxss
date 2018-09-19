@@ -1,0 +1,15 @@
+@import "./../compontents/tabbar.wxss";
+
+.txt {
+  text-align: center;
+  margin: 100rpx 0;
+}
+.company {
+  height: 80rpx;
+  line-height: 80rpx;
+  padding-left: 30rpx;
+  border-top: 1rpx solid #ccc;
+  border-bottom: 1rpx solid #ccc;
+  font-size: 28rpx;
+  margin-bottom: 100rpx;
+}

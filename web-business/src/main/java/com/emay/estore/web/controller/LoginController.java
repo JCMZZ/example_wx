@@ -190,7 +190,7 @@ public class LoginController {
 	
 		// V8短信接口
 		String randomCode = RandomNumberUtils.getRandomCode(6);
-		String content = "【亿美】您的验证码是" + randomCode + "。如非本人操作，请忽略。";
+		String content = "【亿美软通】您的验证码是" + randomCode + "。如非本人操作，请忽略。";
 		try {
 			//判断短信发送是测试或者真实发送
 			SmsSDKClient client = null;
@@ -204,7 +204,7 @@ public class LoginController {
 			if (result.getCode().equals("SUCCESS")) {
 				log.info("发送验证码接口请求成功");
 				SmsResponse smsResponse = result.getResult();
-				log.info("发送验证码接口响应:" + smsResponse.toString());
+				log.info("发送验证码接口响应:" + JsonHelper.toJsonString(smsResponse.toString()));
 			} else {
 				log.info("发送验证码接口请求失败，code："+result.getCode());
 			}
@@ -252,8 +252,8 @@ public class LoginController {
 			ResponseUtils.outputWithJson(response, Result.badResult("手机号格式不正确"));
 			return;
 		}
-//		String vcode = redis.get(RedisKey.CODE_PREFIX + mobile);
-		String vcode = "1111";//仅用于外网测试不能实际发送验证码的情况
+		String vcode = redis.get(RedisKey.CODE_PREFIX + mobile);
+//		String vcode = "1111";//仅用于外网测试不能实际发送验证码的情况
 		if (!verificationCode.equals(vcode)) {
 			ResponseUtils.outputWithJson(response, Result.badResult("验证码错误"));
 			return;

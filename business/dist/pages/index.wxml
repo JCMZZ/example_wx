@@ -1,0 +1,73 @@
+
+  <view>
+    <!--轮播图部分-->
+    <view  wx:if="{{dataList}}">
+      <view class="swiper-handle">
+        <text class="swiper-add" bindtap="addPic">添加</text>
+        <text class="swiper-del" bindtap="delswiper">删除</text>
+      </view>
+      <swiper wx:if="{{bannerCache}}" class="index-swiper" indicator-dots="{{true}}" autoplay="{{true}}" interval="3000" circular="{{true}}" duration="1000" show-confirm-bar="{{false}}" bindchange="getImgUrl" indicator-color="rgba(255, 255, 255, .5)" indicator-active-color="#fff">
+        <swiper-item class="index-swiper-item" wx:for="{{ src }}" wx:key="{{ item }}" item-id="{{item}}">
+          <image wx:if="{{item}}" class="index-swiper-img" src="{{ IMGURL+item }}"/>
+        </swiper-item>
+      </swiper>
+    </view>
+    <!--公司简介-->
+    <view  wx:if="{{dataList}}" class="description">
+      <text class="des-title">公司简介</text>
+      <view class="des-content">{{describe}}</view>
+      <text class="des-edit" bindtap="editContent" data-name="describe">编辑</text>
+    </view>
+    <!--电话-->
+    <view wx:if="{{dataList}}" class="tel">
+      <text class="des-title">电话：</text>
+      <view class="tel-txt">{{tel}}</view> 
+      <text class="tel-edit" bindtap="editContent" data-name="tel">编辑</text>
+    </view>
+    <!--地址-->
+    <view wx:if="{{dataList}}" class="address">
+      <text class="des-title">地址：</text>
+      <text class="ad-edit" bindtap="editContent" data-name="address">编辑</text>
+      <view class="ad-txt">{{address}}</view>
+    </view>
+    <!--底部广告-->
+    <view class="footer-banner">
+      <image bindtap="handlebanner" src="{{IMGURL + adImagePath}}"/>
+      <!--<web-view wx:if="{{bannershow}}" src="{{adLinkPath}}"></web-view>-->
+    </view>
+    <!-- 授权弹框 -->
+    <view class="modal-mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"/>
+      <view class="modal-dialog" wx:if="{{showModal}}">
+        <view class="modal-title">点击确定进行下一步操作</view>
+          <view class="modal-content">
+            <view class="modal-text">
+              提示：点击允许授权进行下一步操作
+            </view>
+          </view>
+        <view class="modal-footer">
+        <button class="btn-confirm" bindtap="onConfirm" data-status="confirm" open-type="getUserInfo" bindgetuserinfo="getUserinfo">确定</button>
+      </view>
+    </view>
+    <!-- 操作弹框 -->
+    <view class="editmodal-mask" catchtouchmove="preventTouchMove" wx:if="{{showeditModal}}"/>
+      <view class="editmodal-dialog" wx:if="{{showeditModal}}">
+      <view class="editmodal-content">
+        <textarea class="editmodal-txt" maxlength="-1" bindinput="getvalue" value="{{modalvalue}}"/>
+      </view> 
+      <view class="editmodal-footer">
+        <button bindtap="saveInput" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini" data-wpysaveinput-a="type">确定</button>
+        <button bindtap="cancelInput" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini">取消</button>
+      </view>
+    </view>
+    <!-- tabbar -->
+      
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

@@ -1,0 +1,2 @@
+@import "./../compontents/tabbar.wxss";
+.txt{text-align:center;margin-top:150rpx}.company{height:80rpx;line-height:80rpx;padding-left:30rpx;border-top:1rpx solid #ccc;border-bottom:1rpx solid #ccc;font-size:28rpx;margin-bottom:100rpx}.weui-msg__title{font-size:26rpx;font-weight:700;margin-top:14rpx}.money{display:block;text-align:center;margin:60rpx 0}

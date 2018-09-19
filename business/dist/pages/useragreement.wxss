@@ -1,0 +1,28 @@
+
+.main {
+  padding: 0 40rpx;
+}
+.txt {
+  font-size: 22rpx;
+}
+.handle{
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 25px;
+  width: 50%;
+}
+.handle .first {
+  margin-right: 30px;
+  color: #fff;
+  width: 25%;
+  display: inline-block;
+  padding: 10rpx;
+  text-align: center;
+  border-radius: 10rpx;
+  background-size: 110rpx 70rpx;
+  background-repeat: no-repeat;
+  background-position:-5rpx -5rpx;
+}
+.handle .two {
+  width: 25%;
+}

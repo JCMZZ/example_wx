@@ -84,5 +84,10 @@ public class EstoreServiceDaoImpl extends BaseSuperDaoImpl<EstoreService> implem
 		this.jdbcTemplate.update(sql, params.toArray());
 
 	}
+	
+	@Override
+	public EstoreService findServiceByProperty(String fieldName, Object value) {
+		return this.findByProperty(fieldName, value);
+	}
 
 }

@@ -1,0 +1,47 @@
+@import "./../compontents/tabbar.wxss";
+
+/*@import '/style/weui.wxss';*/
+.index-swiper {
+  height: 530rpx;
+}
+.index-swiper-img {
+  width: 750rpx;
+  height: 530rpx;
+}
+.dif {
+  font-size: 38rpx;
+  font-weight: 700;
+}
+.newprice {
+  color: #EB4A50;
+}
+.old {
+  text-decoration: line-through;
+}
+.main {
+  padding: 30rpx 40rpx 40rpx 30rpx;
+}
+.desc {
+  margin-top: 40rpx;
+  display: block;
+  font-size: 30rpx;
+}
+.main-price {
+  margin-top: 40rpx;
+}
+.discount {
+  margin: 0 40rpx;
+}
+.placeholder{
+    margin: 5px;
+    padding: 0 10px;
+    text-align: center;
+    background-color: #ccc;
+    height: 3em;
+    line-height: 3em;
+    color: #666;
+}
+button {
+  border-radius: 0;
+  font-size: 25rpx;
+}

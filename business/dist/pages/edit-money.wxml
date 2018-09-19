@@ -1,0 +1,87 @@
+
+  <view>
+    <view>
+      <view class="img">
+        <image  wx:if="{{cardsrc[index]}}" class="bank-card" src="/images/{{cardsrc[index]}}"/>
+      </view>
+      <view class="tel">
+        <text>卡号：</text>
+        <input  wx:if="{{telshow}}" class="active tel-txt" value="{{ cardNumber }}" maxlength="{{19}}" bindinput="getnum"/>
+        <input wx:if="{{!telshow}}" class="tel-txt" value="{{ cardNumber }}" disabled="{{true}}"/> 
+        <text wx:if="{{!telshow}}" class="tel-edit" bindtap="editCardnum">编辑</text>
+        <text wx:if="{{telshow}}" class="tel-edit" bindtap="cancelEdit">取消</text>
+        <text wx:if="{{telshow}}" class="tel-edit" bindtap="saveCardnum">保存</text>
+      </view>
+    </view>
+    <view class="page__bd">
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell common">
+          <view class="weui-cell__bd">余额：</view>
+          <view class="weui-cell__ft">{{balance}}元</view>
+          <button class="common_btn" bindtap="dialog" data-wpydialog-a="1">充值</button>
+          <button class="common_btn" bindtap="dialog" data-wpydialog-a="2">扣费</button>
+        </view>
+        <view class="weui-cell common">
+          <view class="weui-cell__bd">积分：</view>
+          <view class="weui-cell__ft">{{score}}分</view>
+          <button class="common_btn" bindtap="dialog" data-wpydialog-a="3">充值</button>
+          <button class="common_btn" bindtap="dialog" data-wpydialog-a="4">扣除</button>
+        </view>
+        <view class="weui-cell">
+          <view class="weui-cell__bd">等级：</view>
+            <view class="section" bindtap="chooseLevel">
+              <picker bindchange="bindPickerChange" value="{{index}}" range="{{cardLevelname}}">
+                <view class="picker">
+                  {{cardLevelname[index]}}<text class="weui-cell__ft weui-cell__ft_in-access"/>
+                </view>
+              </picker>
+            </view>
+        </view>
+        <navigator url="consume" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+          <view class="weui-cell__bd">消费记录</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access"/>
+        </navigator>
+        <navigator url="integral-record" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+          <view class="weui-cell__bd">积分记录</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access"/>
+        </navigator>
+      </view>
+    </view>
+    <!-- 操作弹框 -->
+    <view class="modal-mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"/>
+      <view class="modal-dialog" wx:if="{{showModal}}">
+      <view class="modal-content">
+        <view class="modal-text">
+          <radio-group bindchange="radioChange">
+            <label class="weui-check__label" wx:for="{{radioItems}}" wx:key="value">
+              <radio class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
+              <view class="weui-cell__hd weui-check__hd_in-checkbox">
+                <icon class="weui-icon-checkbox_circle" type="circle" size="20" wx:if="{{!item.checked}}"/>
+                <icon class="weui-icon-checkbox_success" type="success" size="20" wx:if="{{item.checked}}"/>
+              </view>
+              <view wx:if="{{item.value !== '3'}}" class="weui-cell__bd middle">{{item.name}}</view>
+              <view wx:if="{{item.value === '3'}}" class="weui-cell__bd middle">
+                <text>其他</text><input style="display:inline-block;" class="weui-input" value="10" bindinput="inputPrice" maxlength="10"/>
+              </view>
+            </label>
+          </radio-group>
+        </view>
+        <text class="content-txt">是否充值？</text>
+      </view> 
+      <view class="modal-footer">
+        <button bindtap="dialogConfirm" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini" data-wpydialogconfirm-a="">确定</button>
+        <button bindtap="dialogConfirm" class="weui-btn mini-btn" type="primary" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')" size="mini" data-wpydialogconfirm-a="false">取消</button>
+      </view>
+    </view>
+    <!-- tabbar -->
+      
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

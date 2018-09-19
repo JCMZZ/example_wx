@@ -44,6 +44,16 @@ public class StoreDTO implements Serializable {
 	 * 图片地址
 	 */
 	private List<String> imgList;
+	
+	/**
+	 * 广告位链接地址
+	 */
+	private String adLinkPath;
+	
+	/**
+	 * 广告位图片地址
+	 */
+	private String adImagePath;
 
 	public Long getId() {
 		return id;
@@ -108,5 +118,22 @@ public class StoreDTO implements Serializable {
 	public void setStoreName(String storeName) {
 		this.storeName = storeName;
 	}
+
+	public String getAdLinkPath() {
+		return adLinkPath;
+	}
+
+	public void setAdLinkPath(String adLinkPath) {
+		this.adLinkPath = adLinkPath;
+	}
+
+	public String getAdImagePath() {
+		return adImagePath;
+	}
+
+	public void setAdImagePath(String adImagePath) {
+		this.adImagePath = adImagePath;
+	}
+	
 
 }

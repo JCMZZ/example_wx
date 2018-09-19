@@ -1,0 +1,19 @@
+<style>
+</style>
+<template>
+    <web-view src="{{adLinkPath}}"></web-view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class Out extends wepy.page {
+  config = {
+    navigationBarTitleText: '广告'
+  }
+  data = {
+    adLinkPath: ''
+  }
+  onLoad(option) {
+    this.adLinkPath = option.adLinkPath
+  }
+}
+</script>

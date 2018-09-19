@@ -1,0 +1,41 @@
+
+  <view>
+    <view class="user">
+      <image  wx:if="{{avatarUrl}}" class="user-img" bindlongpress="chooseimage" src="{{ IMGURL + avatarUrl }}" mode="aspecFill"/>
+      <button  wx:if="{{!avatarUrl}}" class="user-img" open-type="getUserInfo" bindgetuserinfo="getUserinfo"/>
+    </view>
+    <view class="userinfo">
+      <view wx:if="{{islogin !== false}}" class="nick">昵称：{{ nickname }}</view>
+      <button wx:if="{{islogin === false}}" plain="true" class="loginbtn" open-type="getUserInfo" bindgetuserinfo="getUserinfo">登录/注册</button>
+    </view>
+    <view class="weui-cells weui-cells_after-title">
+      <button wx:if="{{islogin === false}}" wx:for="{{ lists }}" wx:key="{{ item.text }}" class="navbtn weui-cell weui-cell_access" hover-class="weui-cell_active" open-type="getUserInfo" bindgetuserinfo="getUserinfo">
+        <view class="weui-cell__hd">
+          <image src="/images/{{item.src}}" style="margin-right: 5px;vertical-align: middle;width:20px; height: 20px;"/>
+        </view>
+        <view class="weui-cell__btnbd">{{ item.text }}</view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '账户余额'}}"/>
+        <view class="weui-cell__ft" wx:if="{{item.text === '会员卡'}}"/>
+        <view class="weui-cell__ft" wx:if="{{item.text === '我的积分'}}"/>
+      </button>
+      <navigator wx:if="{{islogin === ''}}" url="/pages/{{item.url}}" wx:for="{{ lists }}" wx:key="{{ item.text }}" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+        <view class="weui-cell__hd">
+          <image src="/images/{{item.src}}" style="margin-right: 5px;vertical-align: middle;width:20px; height: 20px;"/>
+        </view>
+        <view class="weui-cell__bd">{{ item.text }}</view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '账户余额'}}">{{ balance }} 元</view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '会员卡'}}">{{ cardnumber }}</view>
+        <view class="weui-cell__ft" wx:if="{{item.text === '我的积分'}}">{{ score }} 分</view>
+      </navigator>
+    </view>
+      
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

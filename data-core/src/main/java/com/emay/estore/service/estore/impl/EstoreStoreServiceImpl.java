@@ -12,8 +12,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.emay.estore.constant.CommonConstants;
+import com.emay.estore.dao.estore.EstoreAdDao;
 import com.emay.estore.dao.estore.EstoreCardTypeDao;
 import com.emay.estore.dao.estore.EstoreStoreDao;
+import com.emay.estore.dto.estore.EstoreAdDTO;
 import com.emay.estore.dto.estore.StoreDTO;
 import com.emay.estore.pojo.estore.EstoreCardType;
 import com.emay.estore.pojo.estore.EstoreStore;
@@ -34,6 +36,8 @@ public class EstoreStoreServiceImpl implements EstoreStoreService {
 	private EstoreStoreDao estoreStoreDao;
 	@Resource
 	private EstoreCardTypeDao estoreCardTypeDao;
+	@Resource
+	private EstoreAdDao estoreAdDao;
 
 	@Override
 	public Result updateDescribe(Long storeId, String describe) {
@@ -71,6 +75,17 @@ public class EstoreStoreServiceImpl implements EstoreStoreService {
 					list.add(CommonConstants.STOREIMGPATH + storeId + "/" + png[i]);
 				}
 				dto.setImgList(list);
+			}
+		}
+		//首页广告位
+		EstoreAdDTO estoreAdDTO = estoreAdDao.getAd();
+		if(estoreAdDTO!=null){
+			dto.setAdLinkPath(estoreAdDTO.getLinkPath());
+			path = CommonConstants.IMG_BASE_PATH + CommonConstants.ADIMGPATH + estoreAdDTO.getId() + "/";
+			fileTemp = new File(path);
+			if(fileTemp.exists() && fileTemp.isDirectory()){
+				String[] png = fileTemp.list();
+				dto.setAdImagePath(CommonConstants.ADIMGPATH + estoreAdDTO.getId() + "/" + png[0]);
 			}
 		}
 		return dto;

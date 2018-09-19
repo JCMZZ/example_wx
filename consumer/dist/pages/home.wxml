@@ -1,0 +1,43 @@
+
+  <view>
+    <!--轮播图部分-->
+    <view>
+      <swiper class="index-swiper" indicator-dots="{{true}}" autoplay="{{true}}" interval="2500" duration="1000" circular="{{true}}" indicator-color="rgba(255, 255, 255, .5)" indicator-active-color="#fff">
+        <swiper-item class="index-swiper-item"  wx:for="{{ src }}" wx:key="{{ src }}">
+          <image wx:if="{{item}}" class="index-swiper-img" src="{{ IMGURL+item }}"/>
+        </swiper-item>
+      </swiper>
+    </view>
+    <!--公司简介-->
+    <view class="description">
+      <text class="des-title">公司简介</text>
+      <view class="des-content">{{txtvalue}}</view>
+    </view>
+    <!--电话-->
+    <view class="tel">
+      <text class="des-title">电话：</text>
+      <view class="tel-txt">{{telnumber}}</view> 
+      <text class="tel-edit" bindtap="phone">拨打</text>
+    </view>
+    <!--地址-->
+    <view class="address">
+      <text class="des-title">地址：</text>
+      <view class="ad-txt">{{address}}</view>
+    </view>
+    <!--底部广告-->
+    <view class="footer-banner">
+      <image bindtap="handlebanner" src="{{IMGURL + adImagePath}}"/>
+      <!--<web-view wx:if="{{bannershow}}" src="{{adLinkPath}}"></web-view>-->
+    </view>
+    <!-- tabbar -->
+      
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

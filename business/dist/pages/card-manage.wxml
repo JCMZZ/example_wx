@@ -1,0 +1,34 @@
+
+  <view>
+    <view style="">
+      <swiper class="index-swiper" indicator-dots="true" interval="2500" duration="1000" indicator-color="rgba(255, 255, 255, .5)" indicator-active-color="#fff" bindchange="getindex">
+        <swiper-item class="index-swiper-item"  wx:for="{{ src }}" wx:key="{{ src }}" item-id="{{item}}">
+          <image wx:if="{{item}}" class="index-swiper-img" src="{{ item }}"/>
+        </swiper-item>
+      </swiper>
+      <input  wx:if="{{!nameshow}}" class="cardname active" value="{{list[index].name}}" maxlength="{{5}}" bindinput="cardNameCache"/>
+      <view wx:if="{{nameshow}}" class="cardname">{{list[index].name}}</view>
+      <image wx:if="{{nameshow}}" class="edit edit-img" src="../images/edit4.png" bindtap="editCardname">编辑</image>
+      <text wx:if="{{!nameshow}}" class="edit cancel1" bindtap="cancelCardname">取消</text>
+      <text wx:if="{{!nameshow}}" class="edit" bindtap="saveCardname">保存</text>
+    </view>
+    <view class="page__bd">
+      <text class="card">卡片说明：</text>
+      <image src="../images/edit4.png" wx:if="{{show}}" class="edit edit-img" bindtap="editTxt">编辑</image>
+      <text wx:if="{{!show}}" class="edit" bindtap="cancelTxt">取消</text>
+      <text wx:if="{{!show}}" class="edit" bindtap="saveTxt">保存</text>
+      <textarea wx:if="{{!show}}" value="{{ list[index].cardDescribe }}" class="active" bindinput="describeTxtCache"/>
+      <textarea disabled="{{true}}" wx:if="{{show}}" value="{{ list[index].cardDescribe }}"/>
+    </view>
+    <!-- tabber -->
+      
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

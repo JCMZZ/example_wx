@@ -262,11 +262,21 @@
             if (data.success === false) {
               common.tipAlert(data.message)
             } else {
-              this.list = data.result.list
-              if (this.list.length > 9) {
-                this.more = true
+              if (data.result.list !== null) {
+                if (data.result.list.length === 1) {
+                  wx.navigateTo({
+                    url: 'goods-details'
+                  })
+                  this.list = data.result.list
+                  this.$apply()
+                } else {
+                  this.list = data.result.list
+                  if (this.list.length > 9) {
+                    this.more = true
+                  }
+                  this.$apply()
+                }
               }
-              this.$apply()
             }
           }
         }

@@ -1,0 +1,32 @@
+
+  <view>
+    <!--轮播图部分-->
+    <swiper class="index-swiper" indicator-dots="{{true}}" autoplay="{{true}}" circular="{{true}}" interval="2500" duration="1000" indicator-color="rgba(255, 255, 255, .5)" indicator-active-color="#fff">
+      <swiper-item class="index-swiper-item"  wx:for="{{ src }}" wx:key="{{ src }}">
+        <image wx:if="{{item}}" class="index-swiper-img" src="{{ IMGURL+item }}"/>
+      </swiper-item>
+    </swiper>
+    <!--主体部分-->
+    <view class="main">
+      <text class="dif">{{ name }}\n</text>
+      <view class="main-price">
+        <text class="dif newprice">￥{{ newPrice }}</text>
+        <text class="discount">{{ discount }}折</text>
+        <text class="old">￥{{ oldPrice }}</text>
+      </view>
+      <text class="desc">{{ description }}\n</text>
+    </view>
+    <!--底部组件-->
+    <tabar/>
+    <!-- tabbar -->
+      
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

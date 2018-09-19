@@ -1,0 +1,99 @@
+@import "./../compontents/tabbar.wxss";
+
+.cart-name {
+  font-size: 24rpx;
+  color: #3E3E3E;
+  margin-top: 30rpx;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.price {
+  margin-top: 20rpx;
+}
+.newprice {
+  color: #EB4A50;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+.discount {
+  margin: 0 30rpx;
+  color: #9A9A9A;
+}
+.oldprice {
+  text-decoration: line-through;
+  color: #9A9A9A;
+}
+.weui-media-box{
+  padding:30rpx;
+}
+/*排序*/
+.cart-handle {
+  overflow: hidden;
+  padding: 0 40rpx 20rpx;
+  font-size: 30rpx;
+  color: #555;
+}
+.sortClass{
+  position: absolute;
+  border-width:20rpx;
+  border-style: solid;
+  right: -40rpx;
+}
+.sort_top{
+  top:40rpx;
+  border-color:transparent;
+}
+.sort_bottom{
+  top:70rpx;
+  border-color:transparent;
+}
+.sortall {
+  display: inline-block;
+}
+.sortprice {
+  display: inline-block;
+  margin-left: 200rpx;
+  position: relative;
+}
+.change {
+  display: inline-block;
+  width: 46rpx;
+  height: 46rpx;
+  float: right;
+  margin-top: 47rpx;
+}
+.all-active {
+  color: #67ABFE;
+}
+.bottom-active {
+  border-top-color: #67ABFE;
+}
+.top-active {
+  border-bottom-color: #67ABFE;
+}
+
+
+/*产品样式*/
+.cart-list {
+    width: 50%;
+    float: left;
+    margin: 20rpx 0 30rpx 0;
+    box-sizing: border-box;
+    text-align: center;
+}
+.cart-list image {
+    width: 90%;
+    height: 300rpx;
+}
+.list-footer {
+    width: 100%;
+}
+.cart-main>view:nth-child(odd) {
+    padding-left: 20rpx;
+    padding-right: 10rpx;
+}
+.cart-main>view:nth-child(even) {
+    padding-left: 10rpx;
+    padding-right: 20rpx;
+}

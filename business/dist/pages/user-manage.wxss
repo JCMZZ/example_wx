@@ -1,0 +1,2 @@
+@import "./../compontents/tabbar.wxss";
+.content{margin-top:25rpx;color:#4A4A4A}.weui-media-box__desc{color:#4A4A4A}.integral{margin:0 40rpx}.norecord{color:#666;text-align:center;font-size:40rpx;margin-top:50%}.weui-media-box__thumb{border-radius:50%}

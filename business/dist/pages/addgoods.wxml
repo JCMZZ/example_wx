@@ -1,0 +1,46 @@
+
+  <view>
+    <!--轮播图部分-->
+    <view class="swiper-handle">
+      <text class="swiper-add" bindtap="addpic">添加</text>
+      <text class="swiper-del" bindtap="delswiper">删除</text>
+    </view>
+    <swiper class="index-swiper" indicator-dots="{{true}}" autoplay="{{true}}" interval="2500" circular="{{true}}" duration="1000" indicator-color="rgba(255, 255, 255, .5)" indicator-active-color="#fff">
+      <swiper-item class="index-swiper-item"  wx:key="{{ src }}">
+        <image wx:if="{{src}}" class="index-swiper-img" src="{{ src }}" alt="图片"/>
+      </swiper-item>
+    </swiper>
+    <!--主体部分-->
+    <view class="main">
+      <view class="name">
+        <textarea class="nametxt dif" value="{{name}}" maxlength="{{30}}" placeholder="产品名称" bindinput="getText" data-name="name"/>
+      </view>
+      <view>
+        <!--折后价格-->
+        <input class="nptxt dif" value="{{discountPrice}}" placeholder="折后价" bindinput="getText" data-name="disPrice"/>
+        <!--原价-->
+        <input class="optxt dif" value="{{price}}" placeholder="原价" bindinput="getText" data-name="price"/>
+      </view>
+      <view class="desc">
+        <textarea class="nametxt dif" value="{{describe}}" maxlength="{{100}}" placeholder="产品描述" bindinput="getText" data-name="describe"/>
+      </view>
+    </view>
+    <!--保存部分-->
+     <view class="page__bd page__bd_spacing goods-edit">
+        <view style="overflow: hidden;">
+          <view class="save-edit back" bindtap="backP" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">返回</view>
+          <view class="save-edit save" bindtap="saveall" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">保存</view>
+        </view>
+    </view>
+    <!-- tabbar -->
+      
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

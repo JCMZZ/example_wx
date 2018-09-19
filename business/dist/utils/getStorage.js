@@ -1,0 +1,13 @@
+'use strict';
+
+// 同步取缓存中数据
+function getStorage(key) {
+  try {
+    var value = wx.getStorageSync('sessionId');
+    console.log(value);
+    if (value) {
+      this.sessionId = value;
+    }
+  } catch (e) {}
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImdldFN0b3JhZ2UuanMiXSwibmFtZXMiOlsiZ2V0U3RvcmFnZSIsImtleSIsInZhbHVlIiwid3giLCJnZXRTdG9yYWdlU3luYyIsImNvbnNvbGUiLCJsb2ciLCJzZXNzaW9uSWQiLCJlIl0sIm1hcHBpbmdzIjoiOztBQUFBO0FBQ0EsU0FBU0EsVUFBVCxDQUFxQkMsR0FBckIsRUFBMEI7QUFDeEIsTUFBSTtBQUNGLFFBQUlDLFFBQVFDLEdBQUdDLGNBQUgsQ0FBa0IsV0FBbEIsQ0FBWjtBQUNBQyxZQUFRQyxHQUFSLENBQVlKLEtBQVo7QUFDQSxRQUFJQSxLQUFKLEVBQVc7QUFDVCxXQUFLSyxTQUFMLEdBQWlCTCxLQUFqQjtBQUNEO0FBQ0YsR0FORCxDQU1FLE9BQU9NLENBQVAsRUFBVSxDQUNYO0FBQ0YiLCJmaWxlIjoiZ2V0U3RvcmFnZS5qcyIsInNvdXJjZXNDb250ZW50IjpbIi8vIOWQjOatpeWPlue8k+WtmOS4reaVsOaNrlxyXG5mdW5jdGlvbiBnZXRTdG9yYWdlIChrZXkpIHtcclxuICB0cnkge1xyXG4gICAgdmFyIHZhbHVlID0gd3guZ2V0U3RvcmFnZVN5bmMoJ3Nlc3Npb25JZCcpXHJcbiAgICBjb25zb2xlLmxvZyh2YWx1ZSlcclxuICAgIGlmICh2YWx1ZSkge1xyXG4gICAgICB0aGlzLnNlc3Npb25JZCA9IHZhbHVlXHJcbiAgICB9XHJcbiAgfSBjYXRjaCAoZSkge1xyXG4gIH1cclxufVxyXG4iXX0=

@@ -1,0 +1,26 @@
+
+  <view>
+    <view>
+      <view class="img">
+        <image class="bank-card"  wx:if="{{level===1}}" src="/images/{{cardsrc[0]}}"/>
+        <image class="bank-card"  wx:if="{{level===2}}" src="/images/{{cardsrc[1]}}"/>
+        <image class="bank-card" wx:if="{{level===3}}" src="/images/{{cardsrc[2]}}"/>
+      </view>
+      <text class="num">卡号：{{number}}</text>
+    </view>
+    <view class="page__bd">
+      <text>卡片说明：</text>
+      <textarea disabled value="{{ cardDescribe }}" class="{{ classes }}"/>
+    </view>
+    <!--底部组件-->
+      
+    <view class="tabbar_box" style="background-color:{{$Tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$Tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$Tabbar$tabbar.list.length*100}}%; color:{{item.selected==$Tabbar$selecte? $Tabbar$tabbar.selectedColor : $Tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$Tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

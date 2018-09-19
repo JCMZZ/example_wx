@@ -17,7 +17,7 @@
     "mongodb": "^3.0.8",
     "mongodb-server": "^1.0.0",
     "we-cropper": "^1.2.0",
-    "wepy": "^1.7.1",
+    "wepy": "^1.7.2",
     "wepy-async-function": "^1.4.6",
     "weui": "^1.1.2",
     "weui.js": "^1.1.3"

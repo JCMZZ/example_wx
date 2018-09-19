@@ -26,10 +26,10 @@ export default class extends wepy.app {
     // 项目的页面配置
     pages: [
       'pages/index',
+      'pages/commsg',
       'pages/register',
       'pages/selfrcmd',
       'pages/user-manage',
-      'pages/commsg',
       'pages/editmsg',
       'pages/me',
       'pages/cart',
@@ -39,6 +39,7 @@ export default class extends wepy.app {
       'pages/integral-record',
       'pages/newrcmd',
       'pages/payment',
+      'pages/unpaid',
       'pages/successpay',
       'pages/oldrcmd',
       'pages/card-manage',
@@ -50,7 +51,8 @@ export default class extends wepy.app {
       'pages/addgoodspic',
       'pages/binduser',
       'pages/useragreement',
-      'pages/addgoods'
+      'pages/addgoods',
+      'pages/out'
     ],
     // 导航与窗体配置
     window: {
@@ -62,9 +64,12 @@ export default class extends wepy.app {
   }
   // 全局变量
   globalData = {
-    URL: 'http://100.100.9.40:8080/businessestore/',   // 100.100.9.40:8080   127.0.0.1:8080  weixin.m.cn
-    IMGURL: 'http://100.100.9.40:8082/',
+    URL: 'https://weixin.m.cn/businessestore/',   // 100.100.9.59:8080   127.0.0.1:8080  weixin.m.cn
+    IMGURL: 'https://weixin.m.cn/',
     IMGURLEDIT: 'https://weixin.m.cn/baseimg/'
+    // URL: 'http://127.0.0.1:8080/businessestore/',   // 100.100.8.233:8080   127.0.0.1:8080  weixin.m.cn
+    // IMGURL: 'https://weixin.m.cn/',
+    // IMGURLEDIT: 'https://weixin.m.cn/baseimg/'
   }
 }
 </script>

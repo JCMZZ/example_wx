@@ -101,6 +101,8 @@ public class EstoreServiceController {
 			ResponseUtils.outputWithJson(response, result);
 			return;
 		}
+		//短信内容加签名
+		content = "【亿美软通】"+content+"回复TD退订";
 		EstoreServiceSmsBatch batch = estoreServiceSmsBatchService.findByServiceId(serviceId);
 		if (batch == null) {
 			result = estoreServiceSmsBatchService.saveSmsBatch(serviceId, content, currentUser.getId());
@@ -149,6 +151,8 @@ public class EstoreServiceController {
 			ResponseUtils.outputWithJson(response, result);
 			return;
 		}
+		//短信内容加签名
+		content = "【亿美软通】"+content+"回复TD退订";
 		result = estoreServiceSmsBatchService.saveOwnSmsBatch(customerIds, content, currentUser);
 		if (result.getSuccess()) {
 			SimpleEstoreServiceDTO dto = (SimpleEstoreServiceDTO) result.getResult();

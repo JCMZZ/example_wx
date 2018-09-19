@@ -16,4 +16,6 @@ public interface EstoreServiceDao extends BaseSuperDao<EstoreService> {
 
 	void updateServiceState(Long serviceId, Integer serviceState, String return_code, String transaction_id);
 
+	EstoreService findServiceByProperty(String fieldName, Object value);
+
 }

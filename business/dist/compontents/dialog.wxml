@@ -1,0 +1,15 @@
+
+    <view>
+     <view class="modal-mask" catchtouchmove="preventTouchMove"  wx:if="{{showModal}}"/>
+      <view class="modal-dialog"  wx:if="{{showModal}}">
+        <view class="modal-title">点击确定按钮进行授权操作</view>
+          <view class="modal-content">
+            <view class="modal-text">
+              提示：点击允许授权才能进行下一步操作
+            </view>
+          </view>
+        <view class="modal-footer">
+        <button class="btn-confirm" bindtap="onConfirm" data-status="confirm" open-type="getUserInfo" bindgetuserinfo="getUserinfo">确定</button>
+      </view>
+      </view>
+    </view>

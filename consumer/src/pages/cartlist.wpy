@@ -1,0 +1,274 @@
+<style>
+.cart-name {
+  font-size: 24rpx;
+  color: #3E3E3E;
+  margin-top: 30rpx;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.price {
+  margin-top: 20rpx;
+}
+.newprice {
+  color: #EB4A50;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+.discount {
+  margin: 0 30rpx;
+  color: #9A9A9A;
+}
+.oldprice {
+  text-decoration: line-through;
+  color: #9A9A9A;
+}
+.weui-media-box{
+  padding:30rpx;
+}
+/*排序*/
+.cart-handle {
+  overflow: hidden;
+  padding: 0 40rpx 20rpx;
+  font-size: 30rpx;
+  color: #555;
+}
+.sortClass{
+  position: absolute;
+  border-width:20rpx;
+  border-style: solid;
+  right: -40rpx;
+}
+.sort_top{
+  top:40rpx;
+  border-color:transparent;
+}
+.sort_bottom{
+  top:70rpx;
+  border-color:transparent;
+}
+.sortall {
+  display: inline-block;
+}
+.sortprice {
+  display: inline-block;
+  margin-left: 200rpx;
+  position: relative;
+}
+.change {
+  display: inline-block;
+  width: 46rpx;
+  height: 46rpx;
+  float: right;
+  margin-top: 47rpx;
+}
+.all-active {
+  color: #67ABFE;
+}
+.bottom-active {
+  border-top-color: #67ABFE;
+}
+.top-active {
+  border-bottom-color: #67ABFE;
+}
+
+
+/*产品样式*/
+.cart-list {
+    width: 50%;
+    float: left;
+    margin: 20rpx 0 30rpx 0;
+    box-sizing: border-box;
+    text-align: center;
+}
+.cart-list image {
+    width: 90%;
+    height: 300rpx;
+}
+.list-footer {
+    width: 100%;
+}
+.cart-main>view:nth-child(odd) {
+    padding-left: 20rpx;
+    padding-right: 10rpx;
+}
+.cart-main>view:nth-child(even) {
+    padding-left: 10rpx;
+    padding-right: 20rpx;
+}
+</style>
+
+<template lang="wxml">
+  <view>
+    <!--主题内容-->
+    <view class="page__bd">
+        <view class="weui-panel weui-panel_access">
+            <view class="cart-handle">
+              <text class="sortall" @tap="srotall">综合</text>
+              <text class="sortprice" @tap="srotprice">
+                价格
+                <text class="{{topclass}}"></text>
+                <text class="{{bottomclass}}"></text>
+              </text>
+              <image src="../images/list1.png" class="change" @tap="togglelist">样式</image>
+            </view>
+            <view class="cart-main">
+                 <view class="cart-list" wx:for="{{ list }}" wx:key="{{ item.id }}" bindtap="saveId" data-id="{{item.id}}">
+                    <image class="cart-img" src="{{IMGURL+item.imgUrl}}" />
+                    <view class="list-footer">
+                        <view class="cart-name">{{item.name}}</view>
+                        <view class="price">
+                          <text class="newprice">￥{{ item.discountPrice }}</text>
+                          <text class="discount">{{ item.discount }}折</text>
+                          <text class="oldprice">￥{{ item.price }}</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="weui-panel__ft" wx:if="{{list.length > 9}}" bindtap="getMore">
+                <view class="weui-cell weui-cell_access weui-cell_link">
+                    <view class="weui-cell__bd">查看更多</view>
+                    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!-- tabbar -->
+    <tabbar :selecte = "selected"></tabbar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Tabbar from '../compontents/tabbar'
+  export default class Cartlist extends wepy.page {
+    config = {
+      navigationBarTitleText: '产品'
+    }
+    components= {
+      tabbar: Tabbar
+    }
+    data = {
+      selected: 2,
+      URL: '',
+      IMGURL: '',
+      list: [],
+      start: 1,
+      limit: 10,
+      topclass: 'sortClass sort_top',
+      bottomclass: 'sortClass sort_bottom',
+      priceSort: true,
+      orderMethod: 0,
+      orderType: 0
+    }
+    onShow () {
+      wx.showShareMenu({
+        withShareTicket: true
+      })
+       // 获取全局的url
+      this.URL = this.$parent.globalData.URL
+      this.IMGURL = this.$parent.globalData.IMGURL
+      this.backData({
+        start: 1,
+        limit: this.start * this.limit
+      })
+    }
+    saveId (e) {
+      wx.setStorageSync('id', e.currentTarget.dataset.id)
+      wx.navigateTo({
+        url: '/pages/goods-details'
+      })
+    }
+    getMore () {
+      this.start = this.start + 1
+      wx.request({
+        url: this.URL + 'goods/ajax/list',
+        method: 'POST',
+        data: {
+          orderType: this.orderType,
+          orderMethod: this.orderMethod,
+          start: this.start,
+          limit: this.limit
+        },
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'storeId': this.$parent.globalData.storeId,
+          'sessionId': wx.getStorageSync('sessionId')
+        },
+        success: (res) => {
+          let data = res.data
+          if (data.result.list.length === 0) {
+            wx.showToast({
+              title: '没有更多数据了',
+              icon: 'none',
+              duration: 3000
+            })
+          } else {
+            for (var i = 0; i < data.result.list.length; i++) {
+              this.list.push(data.result.list[i])
+            }
+            this.$apply()
+          }
+        }
+      })
+    }
+    // 回显数据
+    backData(data = {}) {
+      wx.request({
+        url: this.URL + 'goods/ajax/list',
+        method: 'POST',
+        data,
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'sessionId': wx.getStorageSync('sessionId'),
+          'storeId': this.$parent.globalData.storeId
+        },
+        success: (res) => {
+          let data = res.data
+          if (data.result.list !== null) {
+            this.list = data.result.list
+            this.$apply()
+          }
+        }
+      })
+    }
+    // 价格排序
+    srotprice () {
+      this.priceSort = !this.priceSort
+      this.orderMethod = this.priceSort ? 1 : 0
+      this.orderType = 1
+      if (this.priceSort === true) {
+        this.topclass = 'sortClass sort_top top-active'
+        this.bottomclass = 'sortClass sort_bottom'
+      } else {
+        this.topclass = 'sortClass sort_top'
+        this.bottomclass = 'sortClass sort_bottom bottom-active'
+      }
+      this.backData({
+        orderType: this.orderType,
+        orderMethod: this.orderMethod,
+        start: 1,
+        limit: this.start * this.limit
+      })
+    }
+    // 综合排序
+    srotall () {
+      this.topclass = 'sortClass sort_top'
+      this.bottomclass = 'sortClass sort_bottom'
+      this.orderMethod = 0
+      this.orderType = 0
+      this.backData({
+        orderType: this.orderType,
+        orderMethod: this.orderMethod,
+        start: 1,
+        limit: this.start * this.limit
+      })
+    }
+    // 切换样式
+    togglelist () {
+      wx.redirectTo({
+        url: 'cart'
+      })
+    }
+  }
+</script>

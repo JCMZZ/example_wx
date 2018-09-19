@@ -69,9 +69,9 @@ export default class Handlepic extends wepy.page {
       zoom: 8,
       cut: {
         x: (width - 360) / 2,
-        y: (height - 200) / 2,
+        y: (height - 150) / 2,
         width: 360,
-        height: 200
+        height: 150
       }
     }
   }

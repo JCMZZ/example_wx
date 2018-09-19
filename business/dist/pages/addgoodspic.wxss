@@ -1,0 +1,2 @@
+@import "./../compontents/wepy-com-cropper.wxss";
+page{padding:0;background-color:#ccc}.cropper-buttons{margin-top:30rpx;overflow:hidden}.upload{float:left}.getCropperImage{float:right}.upload_btn{box-sizing:border-box;color:#fff;width:230rpx;height:60rpx;line-height:60rpx;text-align:center;margin:20rpx;background-size:230rpx 60rpx;background-repeat:no-repeat}

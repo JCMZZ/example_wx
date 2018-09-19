@@ -54,10 +54,10 @@ public class Signature {
 		return result;
 	}
 
-	public static String getSign(Map<String, Object> map) {
+	public static String getSignMap(Map<String, String> map) {
 		ArrayList<String> list = new ArrayList<String>();
-		for (Map.Entry<String, Object> entry : map.entrySet()) {
-			if (entry.getValue() != "") {
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			if (entry.getValue()!=null && entry.getValue() != "") {
 				list.add(entry.getKey() + "=" + entry.getValue() + "&");
 			}
 		}
@@ -70,9 +70,8 @@ public class Signature {
 		}
 		String result = sb.toString();
 		result += "key=" + CommonConstants.KEY;
-		// Util.log("Sign Before MD5:" + result);
+		System.out.println("签名数据：" + result);
 		result = EncryptionUtils.encryptionByMD5(result).toUpperCase();
-		// Util.log("Sign Result:" + result);
 		return result;
 	}
 

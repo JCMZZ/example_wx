@@ -186,11 +186,11 @@ function addTrue(type,id){
 			},
 			appSecret:{
 				wxPass:true
-			},
+			}/*,
 			storeLicence:{
 				required:true,
 				wxLicense:true
-			}
+			}*/
     	},
 		messages:{
 			name:{
@@ -203,13 +203,19 @@ function addTrue(type,id){
 			},
 			appSecret:{
 				wxPass:"请输入32位的字母和数字"
-			},
+			}/*,
 			storeLicence:{
-				required:"营业执照编号不能为空"
-			}
+				required:"营业执照编号不能为空",
+				wxLicense:"请输入15-18位的字母和数字"
+			}*/
 		}
     });
     if($('#addForm').valid()){//是否验证成功
+    	var licenceLength = $("#addStoreLicence").val().length;
+    	if (licenceLength < 15 || licenceLength > 18) {
+    		$.fn.tipAlert("营业执照编号请输入15-18位的字母和数字",1.5,0);
+    		return false;
+    	}
     	var data = {};
     	var objs = $("#addForm").serializeArray(); 
     	for(var i=0;i<objs.length;i++){

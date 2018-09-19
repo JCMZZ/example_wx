@@ -1,0 +1,53 @@
+@import "./../compontents/tabbar.wxss";
+
+page{
+  padding: 0;
+}
+.user {
+  width: 30%;
+  padding: 40rpx;
+  display: inline-block;
+  box-sizing: border-box;
+}
+.user-img {
+  width: 150rpx;
+  height: 150rpx;
+  vertical-align: middle;
+  border-radius: 10rpx;
+}
+.changeuser {
+  width: 200rpx;
+  height: 50rpx;
+  font-size: 18rpx;
+}
+.userinfo {
+  /*width: 65%;*/
+  font-size: 32rpx;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left:40rpx;
+}
+/*.companyname {
+  width:100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}*/
+page,
+.page,
+.page__bd{
+    height: 100%;
+}
+.page__bd{
+    padding-bottom: 0;
+}
+.weui-tab__content{
+    padding-top: 60px;
+    text-align: center;
+}
+.weui-cell__bd {
+  margin-left: 30rpx;
+}
+.weui-cells {
+  font-size: 36rpx;
+}

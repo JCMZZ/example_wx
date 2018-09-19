@@ -20,10 +20,18 @@ page{
   font-size: 18rpx;
 }
 .userinfo {
+  /*width: 65%;*/
   font-size: 32rpx;
   display: inline-block;
   vertical-align: middle;
+  margin-left:40rpx;
 }
+/*.companyname {
+  width:100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}*/
 page,
 .page,
 .page__bd{
@@ -52,7 +60,7 @@ page,
     </view>
     <view class="userinfo">
       <view class="nickname">昵称：{{ nickname }}</view>
-      <view>公司名称：{{ storeName }}</view>
+      <view class="companyname">公司名称：{{ storeName }}</view>
     </view>
     <view class="weui-cells weui-cells_after-title">
       <navigator wx:for="{{ lists }}" wx:key="{{ item.text }}" url="/pages/{{ item.url }}" open-type="navigateTo" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
@@ -138,7 +146,6 @@ page,
         },
         success: (res) => {
           let data = res.data
-          console.log(data)
           if (common.Interceptor(data)) {
             if (data.success === false) {
               common.tipAlert(data.message)

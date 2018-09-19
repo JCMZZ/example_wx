@@ -20,7 +20,7 @@
       <rich-text nodes="{{nodes}}"></rich-text>
       <rich-text nodes="{{nodes2}}"></rich-text>
     </view>
-    <view class="company">收款方：北京亿美软通科技有限公司</view>
+    <view class="company">收款方：北京天羿创荣科技有限公司</view>
     <view class="weui-btn-area">
       <button class="weui-btn" bindtap="pay" type="primary">立即支付</button>
     </view>
@@ -31,8 +31,14 @@
 
 <script>
 import wepy from 'wepy'
+import common from '../utils/common'
 import Tabbar from '../compontents/tabbar'
 export default class Payment extends wepy.page {
+  constructor () {
+    super()
+    this.getPayData = this.getPayData.bind(this)
+    this.confirmPayment = this.confirmPayment.bind(this)
+  }
   config = {
     navigationBarTitleText: '付款'
   }
@@ -45,38 +51,108 @@ export default class Payment extends wepy.page {
       name: 'h2',
       children: [{
         type: 'text',
-        text: '北京亿美软通科技有限公司'
+        text: ''
       }]
     }],
     nodes2: [{
       name: 'h1',
       children: [{
         type: 'text',
-        text: '￥ 5000'
+        text: ''
       }]
     }],
-    type: ''
+    URL: '',
+    msg: '',
+    type: '',
+    res: ''
   }
   methods = {
     pay () {
-      console.log('触发')
-      switch (this.type) {
-        case '1': // 1新客
-          console.log(this.type)
-          break
-        case '2': // 2老客
-          console.log(this.type)
-          break
-        case '3': // 3自主
-          console.log(this.type)
+      if (this.res && this.res.data.success) {
+        let data = this.res.data.result
+        wx.requestPayment({
+          'timeStamp': data.timeStamp,
+          'nonceStr': data.nonceStr,
+          'package': data.package,
+          'signType': data.signType,
+          'paySign': data.paySign,
+          'success': (res) => {
+            wx.redirectTo({
+              url: 'successpay?type=' + this.type + '&price=' + data.price
+            })
+          },
+          'fail': (res) => {
+            console.log('fail', res)
+          }
+        })
+      } else {
+        this.alertTip('请重新支付')
       }
-      wx.redirectTo({
-        url: 'successpay?type=' + this.type
-      })
     }
   }
+  getPayData (res) {
+    let data = res.data
+    if (common.Interceptor(data)) {
+      if (data.success) {
+        this.wxRequest('pay/buyService', {serviceId: data.result.id}, this.confirmPayment)
+      } else {
+        this.alertTip('请重新支付')
+      }
+    }
+  }
+  confirmPayment (res) {
+    if (common.Interceptor(res.data)) {
+      this.res = res
+      if (res.data.success) {
+        let data = res.data.result
+        this.nodes2 = [{
+          name: 'h1',
+          children: [{
+            type: 'text',
+            text: '￥' + data.price
+          }]
+        }]
+        this.$apply()
+        this.nodes = [{
+          name: 'h2',
+          children: [{
+            type: 'text',
+            text: data.productDesc
+          }]
+        }]
+        this.$apply()
+      } else {
+        this.alertTip('请重新支付')
+      }
+    }
+  }
+  wxRequest (url, data, func) {
+    wx.request({
+      url: this.URL + url,
+      data,
+      header: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'sessionId': wx.getStorageSync('sessionId')
+      },
+      method: 'POST',
+      success: func
+    })
+  }
   onLoad(option) {
-    this.type = option.type
+    this.URL = this.$parent.globalData.URL
+    this.type = option.type + ''
+    this.msg = option.msg
+    if (this.type === '3') {
+      let customers = wx.getStorageSync('selfrcmd').filter(value => {
+        return value.checked
+      })
+      let customerIds = customers.map(value => {
+        return value.id
+      }).join()
+      this.wxRequest('service/ownBatch', {customerIds, content: this.msg}, this.getPayData)
+    } else {
+      this.wxRequest('service/batch', {serviceId: wx.getStorageSync('serviceId'), content: this.msg}, this.getPayData)
+    }
   }
 }
 </script>

@@ -334,7 +334,6 @@ export default class GoodsDetails extends wepy.page {
             }
           },
           fail: function (res) {
-            console.log(res)
           }
         })
       }
@@ -443,7 +442,6 @@ export default class GoodsDetails extends wepy.page {
       },
       success: (res) => {
         let data = res.data
-        console.log(data)
         if (common.Interceptor(data)) {
           if (!data.success) {
             common.tipAlert(data.message)
@@ -457,7 +455,6 @@ export default class GoodsDetails extends wepy.page {
         }
       },
       fail: function (res) {
-        console.log(res)
       }
     })
   }
@@ -475,14 +472,16 @@ export default class GoodsDetails extends wepy.page {
       },
       success: (res) => {
         let result = res.data.result
-        this.name = this.nameTS = result.name || ''
-        this.describe = this.describeTS = result.goodsDescribe || ''
-        this.price = this.priceTS = result.price + '' || ''
-        this.discountPrice = this.discountPriceTS = result.discountPrice + '' || ''
-        this.discount = result.discount || ''
-        this.src = !result.imgList || result.imgList.length <= 0 ? [] : result.imgList
-        this.bannerCache = true
-        this.$apply()
+        if (result !== null) {
+          this.name = this.nameTS = result.name || ''
+          this.describe = this.describeTS = result.goodsDescribe || ''
+          this.price = this.priceTS = result.price + '' || ''
+          this.discountPrice = this.discountPriceTS = result.discountPrice + '' || ''
+          this.discount = result.discount || ''
+          this.src = !result.imgList || result.imgList.length <= 0 ? [] : result.imgList
+          this.bannerCache = true
+          this.$apply()
+        }
       }
     })
   }

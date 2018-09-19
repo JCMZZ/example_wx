@@ -1,0 +1,5 @@
+
+  <view>
+    <view class="txt">请联系xxxx@emay.cn开启管理员权限</view>
+    <button class="backbtn" bindtap="backindex">返回首页</button>
+  </view>

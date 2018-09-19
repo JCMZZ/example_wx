@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import cn.emay.common.Result;
 import cn.emay.common.db.Page;
+import cn.emay.util.BigDecimalUtils;
 import cn.emay.util.RequestUtils;
 
 import com.emay.estore.constant.CommonConstants;
@@ -352,10 +353,14 @@ public class EstoreGoodsController {
 		}
 		BigDecimal decimal = new BigDecimal(0);
 		if (price == null || price.compareTo(decimal) != 1) {
-			return Result.badResult("价格不正确");
+			return Result.badResult("原价格不正确");
 		}
 		if (discountPrice == null || discountPrice.compareTo(decimal) != 1) {
-			return Result.badResult("原价不正确");
+			return Result.badResult("折扣价不正确");
+		}
+		BigDecimal discount = BigDecimalUtils.div(BigDecimalUtils.mul(discountPrice, 10), price, 2);
+		if (discount.compareTo(new BigDecimal(0)) != 1 || discount.compareTo(new BigDecimal(10)) == 1) {
+			return Result.badResult("折扣错误");
 		}
 		return Result.rightResult();
 	}

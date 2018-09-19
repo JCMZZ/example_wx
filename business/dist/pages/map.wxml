@@ -1,0 +1,10 @@
+
+    <view>
+        <view  wx:if="{{isGet}}">
+            <map class="map_section" id="myMap" longitude="{{longitude}}" latitude="{{latitude}}" show-location="show-location" scale="{{18}}" controls="{{controls}}" style="height:{{height}}px"/>
+            <view class="btn-area">
+              <button bindtap="getCenterLocation" class="page-body-button" type="primary">选择地址上传</button>
+              <button bindtap="moveToLocation" class="page-body-button" type="primary">取消选择</button>
+            </view>
+        </view>
+    </view>

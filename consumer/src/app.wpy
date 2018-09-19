@@ -26,12 +26,14 @@ export default class extends wepy.app {
       'pages/home',
       'pages/register',
       'pages/cart',
+      'pages/cartlist',
       'pages/me',
       'pages/goods-details',
       'pages/banlance-details',
       'pages/integral-record',
       'pages/card-manage',
-      'pages/useragreement'
+      'pages/useragreement',
+      'pages/out'
     ],
     // 导航与窗体配置
     window: {
@@ -43,9 +45,12 @@ export default class extends wepy.app {
   }
   globalData = {
     storeId: 1,
-    URL: 'http://100.100.9.40:8080/consumerestore/', // 100.100.9.40  127.0.0.1
-    IMGURL: 'http://100.100.9.40:8082/',
+    URL: 'https://weixin.m.cn/consumerestore/', // 100.100.9.40  127.0.0.1  http://100.100.9.40:8080
+    IMGURL: 'https://weixin.m.cn/', // http://100.100.9.40:8082  https://weixin.m.cn
     IMGURLEDIT: 'https://weixin.m.cn/baseimg/'
+    // URL: 'http://127.0.0.1:8080/consumerestore/',   // 100.100.8.233:8080   127.0.0.1:8080  weixin.m.cn
+    // IMGURL: 'http://127.0.0.1:8080/',
+    // IMGURLEDIT: 'http://127.0.0.1:8080/baseimg/'
   }
 }
 </script>

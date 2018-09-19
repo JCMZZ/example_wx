@@ -13,6 +13,7 @@ import com.emay.estore.dao.estore.EstoreGoodsDao;
 import com.emay.estore.dao.estore.EstoreServiceDao;
 import com.emay.estore.dto.estore.GoodsDTO;
 import com.emay.estore.dto.estore.service.EstoreServiceDTO;
+import com.emay.estore.pojo.estore.EstoreService;
 import com.emay.estore.service.estore.EstoreServiceService;
 
 @Service
@@ -61,6 +62,16 @@ public class EstoreServiceServiceImpl implements EstoreServiceService {
 	public void updateServiceState(Long serviceId, Integer serviceState, String return_code, String transaction_id) {
 		estoreServiceDao.updateServiceState(serviceId, serviceState, return_code, transaction_id);
 
+	}
+	
+	@Override
+	public EstoreService findById(Long id) {
+		return estoreServiceDao.findById(id);
+	}
+	
+	@Override
+	public EstoreService findByOutTradeNo(String outTradeNo) {
+		return estoreServiceDao.findServiceByProperty("outTradeNo",outTradeNo);
 	}
 
 }

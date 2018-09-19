@@ -48,7 +48,6 @@ public class InitService {
 			}else{
 				CommonConstant.SMS_SDK_CLIENT  = new SmsSDKClient(CommonConstant.SMS_APPID,CommonConstant.SMS_SECRETKEY);
 			}
-			CommonConstant.SMS_SDK_CLIENT = new SmsSDKClient(CommonConstant.SMS_IP, CommonConstant.SMS_PORT, CommonConstant.SMS_APPID,CommonConstant.SMS_SECRETKEY);
 		} catch (SDKParamsException e) {
 			logger.error("SmsSDKClient实例化异常：", e);
 		}

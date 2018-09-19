@@ -1,0 +1,28 @@
+
+  <view>
+    <view class="record"  wx:for="{{ list }}" wx:key="{{ list }}">
+      <!--<text class="name">购买{{ item.pName }}产品</text>-->
+      <text class="time">{{item.createTime}}</text>
+      <text wx:if="{{item.type === '2'}}" class="price">-{{item.changeBalance}} 元</text>
+      <text wx:if="{{item.type === '1'}}" class="price">+{{item.changeBalance}} 元</text>
+    </view>
+    <view  wx:if="{{list.length <= 0}}" class="norecord">----- 您暂时没有消费记录 -----</view>
+    <!--查看更多-->
+    <view wx:if="{{list.length > 9}}" class="weui-panel__ft" bindtap="getMore">
+      <view class="weui-cell weui-cell_access weui-cell_link">
+        <view class="weui-cell__bd">查看更多</view>
+        <view class="weui-cell__ft weui-cell__ft_in-access"/>
+      </view>
+    </view>
+    <!-- tabbar -->
+      
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

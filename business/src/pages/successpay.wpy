@@ -57,13 +57,20 @@ export default class Successpay extends wepy.page {
       name: 'h1',
       children: [{
         type: 'text',
-        text: '￥ 5000'
+        text: ''
       }]
     }],
     type: ''
   }
   onLoad(option) {
     this.type = option.type
+    this.nodes = [{
+      name: 'h1',
+      children: [{
+        type: 'text',
+        text: '￥' + option.price
+      }]
+    }]
   }
 }
 </script>

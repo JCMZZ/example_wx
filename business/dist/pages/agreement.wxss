@@ -1,0 +1,30 @@
+@import "./../compontents/tabbar.wxss";
+
+.main {
+  padding: 0 40rpx;
+}
+.txt {
+  font-size: 22rpx;
+}
+.handle{
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 25px;
+  width: 50%;
+}
+.handle .common {
+  display: inline-block;
+  padding: 10rpx;
+  text-align: center;
+  border: 1px solid #666;
+  border-radius: 10rpx;
+}
+.handle .first {
+  margin-right: 30px;
+  background-color: #2292c4;
+  color: #fff;
+  width: 25%;
+}
+.handle .two {
+  width: 25%;
+}

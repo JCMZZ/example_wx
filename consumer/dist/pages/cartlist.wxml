@@ -1,0 +1,47 @@
+
+  <view>
+    <!--主题内容-->
+    <view class="page__bd">
+        <view class="weui-panel weui-panel_access">
+            <view class="cart-handle">
+              <text class="sortall" bindtap="srotall">综合</text>
+              <text class="sortprice" bindtap="srotprice">
+                价格
+                <text class="{{topclass}}"/>
+                <text class="{{bottomclass}}"/>
+              </text>
+              <image src="../images/list1.png" class="change" bindtap="togglelist">样式</image>
+            </view>
+            <view class="cart-main">
+                 <view class="cart-list"  wx:for="{{ list }}" wx:key="{{ item.id }}" bindtap="saveId" data-id="{{item.id}}">
+                    <image class="cart-img" src="{{IMGURL+item.imgUrl}}"/>
+                    <view class="list-footer">
+                        <view class="cart-name">{{item.name}}</view>
+                        <view class="price">
+                          <text class="newprice">￥{{ item.discountPrice }}</text>
+                          <text class="discount">{{ item.discount }}折</text>
+                          <text class="oldprice">￥{{ item.price }}</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="weui-panel__ft"  wx:if="{{list.length > 9}}" bindtap="getMore">
+                <view class="weui-cell weui-cell_access weui-cell_link">
+                    <view class="weui-cell__bd">查看更多</view>
+                    <view class="weui-cell__ft weui-cell__ft_in-access"/>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!-- tabbar -->
+      
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  </view>

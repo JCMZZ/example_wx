@@ -24,12 +24,15 @@ public class CommonConstants {
 	
 	/* 文件存放基础路径 */
 	public static String IMG_BASE_PATH;
+	/* 图片访问基础路径 */
+	public static String IMG_ACCESS_BASE_PATH;
 	/* 文件存放路径 */
 	public final static String STOREIMGPATH = "img/store/";//+storeid
 	public final static String HEADIMGPATH_C = "img/head/c/";//+customerid
 	public final static String HEADIMGPATH_B = "img/head/b/";//+adminid
 	public final static String GOODSIMGPATH = "img/goods/";//+storeid+goodsid
 	public final static String STOREDATAPATH = "img/data/";//+storeid
+	public final static String ADIMGPATH = "img/ad/";//+id-广告位图片
 
 	/* 图片支持类型 */
 	public static final String IMGTYPE = "jpg,png,jpeg";
@@ -77,6 +80,7 @@ public class CommonConstants {
 			APPID = PropertiesUtil.getProperty("miniprogram.appId", WEB_CONFIG_PATH);
 			APPSECRET = PropertiesUtil.getProperty("miniprogram.appSecret", WEB_CONFIG_PATH);
 			IMG_BASE_PATH = PropertiesUtil.getProperty("img_base_path", WEB_CONFIG_PATH);
+			IMG_ACCESS_BASE_PATH = PropertiesUtil.getProperty("img_access_url", WEB_CONFIG_PATH);
 			
 			LOGIN_EXPIRY_TIME = PropertiesUtil.getIntProperty("login_expiry_time", WEB_CONFIG_PATH, 7);
 			LOGIN_EXPIRY_TIME = LOGIN_EXPIRY_TIME * 24 * 60 * 60;//转换为秒，redis超时时间

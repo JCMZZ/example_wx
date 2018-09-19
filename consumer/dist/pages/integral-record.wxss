@@ -1,0 +1,23 @@
+@import "./../compontents/tabbar.wxss";
+
+.record {
+  padding: 50rpx 40rpx;
+  border-bottom: 1rpx solid #ccc;
+}
+.name {
+  display: inline-block;
+  width: 35%;
+}
+.time {
+  color: #2292C4;
+}
+.price {
+  float: right;
+  font-weight: 700;
+}
+.norecord {
+  color: #666;
+  text-align:center;
+  margin-top:50%;
+  font-size: 40rpx;
+}

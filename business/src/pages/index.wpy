@@ -4,11 +4,19 @@ page {
 }
 // 轮播图部分
 .index-swiper {
-  height: 400rpx;
+  height: 250rpx;
 }
 .index-swiper-img {
   width: 750rpx;
-  height: 400rpx;
+  height: 250rpx;
+}
+// 底部广告
+.footer-banner {
+  height: 150rpx;
+}
+.footer-banner image{
+  width: 100%;
+  height: 150rpx;
 }
 // 地图
 .shop-map {
@@ -273,6 +281,11 @@ button[size=mini] {
       <text class="ad-edit" bindtap="editContent" data-name="address">编辑</text>
       <view class="ad-txt">{{address}}</view>
     </view>
+    <!--底部广告-->
+    <view class="footer-banner">
+      <image bindtap="handlebanner" src="{{IMGURL + adImagePath}}"></image>
+      <!--<web-view wx:if="{{bannershow}}" src="{{adLinkPath}}"></web-view>-->
+    </view>
     <!-- 授权弹框 -->
     <view class="modal-mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
       <view class="modal-dialog" wx:if="{{showModal}}">
@@ -347,7 +360,9 @@ button[size=mini] {
       showeditModal: false,
       modalvalue: '',
       newvalue: '',
-      modaltype: ''
+      modaltype: '',
+      adLinkPath: '', // 图片链接路径
+      adImagePath: '' // 图片路径
     }
     // 授权部分相关操作
     methods = {
@@ -687,6 +702,7 @@ button[size=mini] {
           if (common.Interceptor(data)) {
             let result = this.dataList = data.result
             if (data.success) {
+              console.log(data)
               this.src = !result.imgList || result.imgList.length <= 0 ? [] : result.imgList
               this.tel = result.mobile || ''
               this.describe = result.describe || ''
@@ -695,6 +711,8 @@ button[size=mini] {
               this.latitude = result.dimension || ''
               this.longitude = result.longitude || ''
               this.bannerCache = true
+              this.adLinkPath = result.adLinkPath || ''
+              this.adImagePath = result.adImagePath || ''
               this.$apply()
             } else {
               common.tipAlert(data.message)
@@ -705,6 +723,14 @@ button[size=mini] {
           common.tipAlert('网络错误')
         }
       })
+    }
+    // 图片点击事件
+    handlebanner() {
+      if (this.adLinkPath !== '') {
+        wx.navigateTo({
+          url: 'out?adLinkPath=' + this.adLinkPath
+        })
+      }
     }
   }
 </script>

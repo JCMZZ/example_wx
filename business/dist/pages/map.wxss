@@ -1,0 +1,18 @@
+
+page{
+  padding:0;
+}
+.map_section{
+  width:100%;
+}
+.page-body-button {
+  position: relative;
+  margin-bottom: 30rpx;
+}
+.btn-area{
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 0 30rpx;
+}

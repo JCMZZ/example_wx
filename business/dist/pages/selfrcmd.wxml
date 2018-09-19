@@ -1,0 +1,137 @@
+
+<view class="page">
+  <view class="page__bd">
+    <view class="weui-tab">
+      <view class="weui-navbar">
+        <block  wx:for="{{tabs}}" wx:key="*this">
+          <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+            <view class="weui-navbar__title">{{item}}</view>
+          </view>
+        </block>
+        <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"/>
+      </view>
+      <view class="weui-tab__panel">
+        <!--待推荐-->
+        <view hidden="{{activeIndex != 0}}">
+          <view class="panel_top">
+            <view class="check_all">
+              <label class="weui-cell weui-check__label" bindtap="checkAll">
+                <view class="weui-cell__hd weui-check__hd_in-checkbox">
+                    <icon class="weui-icon-checkbox_circle" type="circle" size="23"  wx:if="{{!checkAllActive}}"/>
+                    <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{checkAllActive}}"/>
+                </view>
+                <view class="weui-cell__bd">全选</view>
+              </label>
+            </view>
+            <view class="sortAll">
+              <view bindtap="sortHandler" data-wpysorthandler-a="balance">
+                余额排序
+                <text class="sortClass sort_top" style="border-bottom-color:{{balanceSort && sortActive === 'balance'?'#67ABFE':'#999'}};"/> 
+                <text class="sortClass sort_bottom" style="border-top-color:{{!balanceSort && sortActive === 'balance'?'#67ABFE':'#999'}};"/>              
+              </view>
+              <view bindtap="sortHandler" data-wpysorthandler-a="integral">
+                积分排序
+                <text class="sortClass sort_top" style="border-bottom-color:{{integralSort && sortActive === 'integral'?'#67ABFE':'#999'}};"/> 
+                <text class="sortClass sort_bottom" style="border-top-color:{{!integralSort && sortActive === 'integral'?'#67ABFE':'#999'}};"/>
+              </view>
+              <view bindtap="sortHandler" data-wpysorthandler-a="class">
+                等级排序
+                <text class="sortClass sort_top" style="border-bottom-color:{{classSort && sortActive === 'class'?'#67ABFE':'#999'}};"/> 
+                <text class="sortClass sort_bottom" style="border-top-color:{{!classSort && sortActive === 'class'?'#67ABFE':'#999'}};"/>
+              </view>
+            </view>
+          </view>
+          <!--待推荐-->
+          <checkbox-group bindchange="checkboxChange">
+            <label class="weui-cell weui-check__label" wx:for="{{stayRecommendList}}" wx:key="{{index}}">
+                <checkbox class="weui-check" value="{{item.id}}" checked="{{item.checked}}"/>
+                <view class="weui-cell__hd weui-check__hd_in-checkbox">
+                    <icon class="weui-icon-checkbox_circle" type="circle" data-id="{{item.id}}" size="23" wx:if="{{!item.checked}}"/>
+                    <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{item.checked}}"/>
+                </view>
+                <view class="record_user">
+                  <!--头像-->
+                  <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                    <image wx:if="{{item.avatarUrl}}" class="weui-media-box__thumb" src="{{IMGURL+item.avatarUrl}}"/>
+                  </view>
+                  <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                    <text class="name">{{ item.nickname }}</text>
+                    <view class="content">
+                      <text class="">余额: {{ item.balance }}</text>
+                      <text class="integral">积分: {{ item.score }}</text>
+                      <text class="">等级: {{ item.cardName }}</text>
+                    </view>
+                  </view>
+                </view>
+            </label>
+          </checkbox-group>
+          <view wx:if="{{stayRecommendList.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+          <!--查看更多-->
+          <view wx:if="{{stayRecommendList.length > 9}}" class="weui-panel__ft" bindtap="getMore" data-type="待推荐">
+            <view class="weui-cell weui-cell_access weui-cell_link">
+              <view class="weui-cell__bd">查看更多</view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"/>
+            </view>
+          </view>
+          <view class="self_padd_bottom"/>
+        </view>
+        <!--待支付-->
+        <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
+          <view class="pay-main" wx:for="{{ stayPayList }}" wx:key="{{ index }}">
+            <view class="record">
+              <text class="pay-name">对 {{ item.servicePeopleNum }} 位用户进行营销</text>
+              <text class="price">￥{{item.servicePrice}}</text>
+            </view>
+            <view>
+              <text class="pay-time">{{item.serviceTime}}</text>
+              <navigator url="unpaid?type=3&serviceId={{item.id}}&price={{item.servicePrice}}" wx:if="{{item.serviceState === 1}}" class="pay" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">待支付</navigator>
+              <text wx:if="{{item.serviceState === 3}}" class="pay failpay">支付失败</text>
+            </view>
+          </view>
+          <view wx:if="{{stayPayList.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+          <!--查看更多-->
+          <view wx:if="{{stayPayList.length > 9}}" class="weui-panel__ft" bindtap="getMore" data-type="待支付">
+            <view class="weui-cell weui-cell_access weui-cell_link">
+              <view class="weui-cell__bd">查看更多</view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"/>
+            </view>
+          </view>
+        </view>
+        <!--已付费-->
+        <view class="weui-tab__content" hidden="{{activeIndex != 2}}">
+          <view class="pay-main" wx:for="{{ yetPayList }}" wx:key="{{ index }}">
+            <view class="sucrecord">
+              <view>
+                <text class="pay-name">已对 {{ item.servicePeopleNum }} 位用户进行营销</text>
+                <text class="price">-{{item.servicePrice}}元</text>
+              </view>
+              <text class="sucpay-time">{{item.serviceTime}}</text>
+            </view>
+          </view>
+          <view wx:if="{{yetPayList.length <= 0}}" class="norecord">----- 暂时没有数据 -----</view>
+          <!--查看更多-->
+          <view wx:if="{{yetPayList.length > 9}}" class="weui-panel__ft" bindtap="getMore" data-type="已付费">
+            <view class="weui-cell weui-cell_access weui-cell_link">
+              <view class="weui-cell__bd">查看更多</view>
+              <view class="weui-cell__ft weui-cell__ft_in-access"/>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- tabbar -->
+    
+    <view class="tabbar_box" style="background-color:{{$tabbar$tabbar.backgroundColor}}">  
+        <block  wx:for="{{$tabbar$tabbar.list}}" wx:for-item="item" wx:key="index">  
+            <navigator class="tabbar_nav" url="{{item.pagePath}}" style="width:{{1/$tabbar$tabbar.list.length*100}}%; color:{{item.selected==$tabbar$selecte? $tabbar$tabbar.selectedColor : $tabbar$tabbar.color}}" open-type="redirectTo">  
+                <image class="tabbar_icon" src="{{item.selected==$tabbar$selecte? item.selectedIconPath : item.iconPath}}"/>  
+                <text>{{item.text}}</text>  
+            </navigator>  
+        </block>  
+    </view>  
+
+  <view hidden="{{activeIndex != 0}}" class="self_btn_box">
+    <button type="primary" bindtap="send" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">立即营销</button>
+  </view>
+</view>

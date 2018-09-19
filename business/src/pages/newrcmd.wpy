@@ -161,7 +161,7 @@
             </view>
             <view>
               <text class="pay-time">{{item.serviceTime}}</text>
-              <navigator url='payment' wx:if="{{item.serviceState === 1}}" class="pay" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">待支付</navigator>
+              <navigator url='unpaid?type=2&serviceId={{item.id}}&price={{item.servicePrice}}' wx:if="{{item.serviceState === 1}}" class="pay" style="background-image:url('{{IMGURLEDIT}}img/btn2.png')">待支付</navigator>
               <text wx:if="{{item.serviceState === 3}}" class="pay failpay">支付失败</text>
             </view>
           </view>
